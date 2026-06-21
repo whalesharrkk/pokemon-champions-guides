@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>포켓몬 챔피언스 M-B 싱글 선출 도우미</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--soft:#f8fafc;--text:#172033;--muted:#667085;--line:#dfe5ee;--primary:#315efb;--purple:#7655e8;--danger:#d92d20;--warn:#b54708;--good:#12805c;--shadow:0 12px 32px rgba(23,32,51,.08);--r:18px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 0 0,rgba(49,94,251,.12),transparent 32rem),var(--bg);color:var(--text);font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;line-height:1.55}
+button,select,input{font:inherit}.shell{width:min(1320px,calc(100% - 28px));margin:auto;padding:28px 0 60px}.hero{padding:18px 2px 24px}.eyebrow{margin:0;color:var(--primary);font-weight:900;font-size:.82rem;letter-spacing:.08em}.hero h1{margin:6px 0 10px;font-size:clamp(2rem,5vw,3.6rem);line-height:1.1;letter-spacing:-.05em}.hero p{max-width:850px;color:var(--muted);margin:0}.notice{margin-top:15px;padding:13px 15px;border:1px solid #cbd8ff;border-radius:13px;background:#eef3ff;color:#29418c;font-size:.9rem}
+.grid{display:grid;gap:20px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}.card-head{padding:20px 22px 0;display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.card-head h2,.card-head h3{margin:0;letter-spacing:-.025em}.card-head p{margin:5px 0 0;color:var(--muted);font-size:.9rem}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;padding:18px 22px}.toolbar>*{min-height:43px}.btn{border:0;border-radius:11px;padding:10px 15px;font-weight:850;cursor:pointer}.primary{background:var(--primary);color:#fff}.secondary{background:#eef1f6;color:var(--text)}.danger{background:#fff0ef;color:var(--danger)}.field{display:grid;gap:5px;min-width:170px}.field label{color:var(--muted);font-size:.76rem;font-weight:800}.field select,.field input,.slot select{width:100%;border:1px solid #ced6e3;border-radius:9px;background:#fff;padding:8px 10px}
+.team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0 22px 22px}.slot{min-width:0;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}.slot-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.slot-title strong{font-size:.84rem}.legal{font-size:.68rem;color:var(--good);font-weight:900}.preview{margin-top:9px}.name{font-weight:900}.badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.badge{padding:3px 7px;border-radius:999px;background:#e8edf4;font-size:.69rem;font-weight:850}.role{background:#f0ecff;color:#5c3cb2}.mega{background:#fff0fa;color:#a62372}.stat{display:block;margin-top:7px;color:var(--muted);font-size:.7rem}.build{display:grid;gap:8px;margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}.build-row{display:grid;grid-template-columns:58px minmax(0,1fr);gap:7px;align-items:center}.build-row>label{font-size:.7rem;color:var(--muted);font-weight:800}
+.move-search-row{display:grid;grid-template-columns:58px minmax(0,1fr);gap:7px;align-items:center}
+.move-search-row label{font-size:.7rem;color:var(--muted);font-weight:800}
+.move-search{width:100%;border:1px solid #ced6e3;border-radius:9px;background:#fff;padding:7px 9px;font-size:.78rem}
+
+.moves{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.summary{padding:8px;border-radius:9px;background:#edf3ff;color:#344a8a;font-size:.7rem}.error{display:none;margin:0 22px 20px;padding:11px;border-radius:10px;background:#fff0ef;color:var(--danger);font-weight:800;font-size:.86rem}.error.show{display:block}
+.results{display:none;gap:20px}.results.show{display:grid}.tabs{display:flex;flex-wrap:wrap;gap:8px;padding:18px 22px 0}.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 13px;font-weight:850;cursor:pointer}.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.result-body{padding:20px 22px 24px}.headline{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}.score strong{font-size:3.8rem;color:var(--primary);letter-spacing:-.07em;line-height:1}.score span{color:var(--muted);font-weight:800}.pick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.pick{padding:14px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,#fff,#f4f7fc)}.pick small{color:var(--primary);font-weight:900}.pick h3{margin:4px 0}.loadout{font-size:.72rem;color:var(--muted);margin-top:7px}.loadout div+div{margin-top:3px}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:18px}.kpi{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}.kpi span{display:block;color:var(--muted);font-size:.7rem}.kpi strong{font-size:1.15rem}
+.analysis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:15px}.box{padding:15px;border:1px solid var(--line);border-radius:13px;background:var(--soft)}.box h3{margin:0 0 8px;font-size:.95rem}.box ul{margin:0;padding-left:19px}.box li+li{margin-top:5px}.warning h3{color:var(--warn)}
+.mega-plan{border-left:4px solid var(--purple)}.matrix-wrap{overflow:auto;padding:18px 22px 22px}.matrix{width:100%;border-collapse:separate;border-spacing:0;font-size:.78rem}.matrix th,.matrix td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px;text-align:center;min-width:105px}.matrix th:first-child,.matrix td:first-child{border-left:1px solid var(--line)}.matrix thead th{border-top:1px solid var(--line);background:#f3f6fb}.matrix thead th:first-child{border-top-left-radius:10px}.matrix thead th:last-child{border-top-right-radius:10px}.fav{background:#eaf9f2;color:#087353}.even{background:#f7f8fa}.bad{background:#fff0ef;color:#b42318}.cell-sub{display:block;font-size:.65rem;color:inherit;opacity:.78}
+.switches,.ranking{display:grid;gap:9px;padding:18px 22px 22px}.row-card{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:11px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}.rank{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#e9efff;color:var(--primary);font-weight:900}.row-card small{display:block;color:var(--muted)}.row-score{font-weight:900;color:var(--primary)}
+.footer{text-align:center;color:var(--muted);font-size:.78rem;padding-top:24px}
+@media(max-width:1000px){.team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.team-grid,.pick-grid,.analysis{grid-template-columns:1fr}.headline{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.moves{grid-template-columns:1fr}.shell{width:min(100% - 16px,1320px)}.card-head,.toolbar,.team-grid,.result-body,.matrix-wrap,.switches,.ranking{padding-left:14px;padding-right:14px}.row-card{grid-template-columns:34px 1fr}.row-score{grid-column:2}.score strong{font-size:3rem}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="hero">
+<p class="eyebrow">M-B 규정 · 싱글 배틀 · 6마리 중 3마리 선출</p>
+<h1>포켓몬 챔피언스 선출 도우미</h1>
+<p>상대의 가능한 3마리 선출 20개를 전수 분석하고, 추천 선출·선봉·메가진화 사용자·교체 관계·위험 요소를 함께 제안합니다.</p>
+<div class="notice">M-B 기간: 2026-06-16 19:00 PDT ~ 2026-09-01 18:59 PDT. 현재 M-B 로스터와 확인된 메가진화 76종을 한국어 이름으로 선택할 수 있습니다. 상대 파티는 포켓몬 6마리만 입력합니다. 내 파티의 기술 선택창은 인터넷 연결 시 포켓몬 챔피언스 전체 사용 가능 기술목록을 불러오며, 모든 기술명은 한국어로 표시됩니다.</div>
+</header>
+
+<main class="grid">
+<section class="card">
+<div class="card-head"><div><h2>분석 설정</h2><p>상대 정보 수준과 추천 성향을 설정합니다.</p></div></div>
+<div class="toolbar">
+
+<div class="field"><label for="riskWeight">안정성 반영</label><select id="riskWeight"><option value="balanced">균형: 평균 70% + 최악 30%</option><option value="safe">안정: 평균 50% + 최악 50%</option><option value="aggressive">공격: 평균 90% + 최악 10%</option></select></div>
+<div class="field" style="min-width:240px">
+<label>기술 데이터 상태</label>
+<div id="moveDataStatus" style="display:flex;align-items:center;min-height:43px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--muted);font-size:.78rem">기술목록 불러오는 중</div>
+</div>
+<button id="refreshMovesBtn" class="btn secondary">기술목록 새로고침</button>
+<button id="sampleBtn" class="btn secondary">예시 파티</button>
+<button id="saveBtn" class="btn secondary">내 파티 저장</button>
+<button id="loadBtn" class="btn secondary">저장 파티 불러오기</button>
+<button id="shareBtn" class="btn secondary">공유 코드 복사</button>
+<button id="resetBtn" class="btn danger">초기화</button>
+</div>
+</section>
+
+<section class="card">
+<div class="card-head"><div><h2>내 파티</h2><p>기술 4개, 특성, 도구, 스피드 투자를 입력합니다. 기술 선택창에는 한국어로 확인된 포켓몬 챔피언스 기술과 전용기·신규기 보완 목록이 표시됩니다. 대쓰여너의 성묘처럼 누락되기 쉬운 핵심 기술도 포함됩니다.</p></div></div>
+<div id="myTeam" class="team-grid"></div>
+</section>
+
+<section class="card">
+<div class="card-head"><div><h2>상대 파티</h2><p>상대방에게 공개되는 포켓몬 6마리만 선택합니다. 기술·특성·도구는 입력하지 않습니다.</p></div></div>
+<div id="enemyTeam" class="team-grid"></div>
+<div class="toolbar"><button id="analyzeBtn" class="btn primary" style="flex:1">M-B 선출 분석</button></div>
+<p id="error" class="error"></p>
+</section>
+
+<section id="results" class="results">
+<article class="card">
+<div class="card-head"><div><h2>추천 결과</h2><p id="confidenceText"></p></div></div>
+<div id="tabs" class="tabs"></div>
+<div class="result-body">
+<div class="headline">
+<div class="score"><strong id="totalScore">0</strong><span>/100</span></div>
+<div id="pickGrid" class="pick-grid"></div>
+</div>
+<div id="kpis" class="kpis"></div>
+<div class="analysis">
+<div class="box"><h3>추천 이유</h3><ul id="reasons"></ul></div>
+<div class="box mega-plan"><h3>메가진화 플랜</h3><div id="megaPlan"></div></div>
+<div class="box"><h3>추천 선봉</h3><div id="leadPlan"></div></div>
+<div class="box warning"><h3>위험 요소</h3><ul id="risks"></ul></div>
+</div>
+</div>
+</article>
+
+<article class="card">
+<div class="card-head"><div><h2>3 × 6 대면표</h2><p>선택 기술·종족값·스피드·메가 플랜을 반영한 상대적 판정입니다.</p></div></div>
+<div id="matrix" class="matrix-wrap"></div>
+</article>
+
+<article class="card">
+<div class="card-head"><div><h2>추천 교체 관계</h2><p>약점 공격을 예상했을 때 가장 안전한 팀원을 표시합니다.</p></div></div>
+<div id="switches" class="switches"></div>
+</article>
+
+<article class="card">
+<div class="card-head"><div><h2>상위 5개 선출</h2><p>평균·최악 상황과 메가 플랜을 함께 비교합니다.</p></div></div>
+<div id="ranking" class="ranking"></div>
+</article>
+</section>
+</main>
+<div class="footer">단일 웹 문서 · 로컬 저장 지원 · 비공식 전략 보조 도구</div>
+</div>
+
+<script>
+"use strict";
+
+/* ===== 데이터 ===== */
+const TYPE_KO={normal:"노말",fire:"불꽃",water:"물",electric:"전기",grass:"풀",ice:"얼음",fighting:"격투",poison:"독",ground:"땅",flying:"비행",psychic:"에스퍼",bug:"벌레",rock:"바위",ghost:"고스트",dragon:"드래곤",dark:"악",steel:"강철",fairy:"페어리"};
+const ROLE_KO={physical:"물리 공격수",special:"특수 공격수",physicalTank:"물리 탱커",specialTank:"특수 탱커",support:"서포터",speed:"스피드 컨트롤"};
+const TAG_KO={defense:"방어",speed:"속도 조절",weather:"날씨",recovery:"회복",setup:"능력치 강화",pivot:"교체 운영",priority:"선공기",status:"상태이상"};
+const CHART={
+normal:{rock:.5,ghost:0,steel:.5},fire:{fire:.5,water:.5,grass:2,ice:2,bug:2,rock:.5,dragon:.5,steel:2},water:{fire:2,water:.5,grass:.5,ground:2,rock:2,dragon:.5},electric:{water:2,electric:.5,grass:.5,ground:0,flying:2,dragon:.5},grass:{fire:.5,water:2,grass:.5,poison:.5,ground:2,flying:.5,bug:.5,rock:2,dragon:.5,steel:.5},ice:{fire:.5,water:.5,grass:2,ice:.5,ground:2,flying:2,dragon:2,steel:.5},fighting:{normal:2,ice:2,poison:.5,flying:.5,psychic:.5,bug:.5,rock:2,ghost:0,dark:2,steel:2,fairy:.5},poison:{grass:2,poison:.5,ground:.5,rock:.5,ghost:.5,steel:0,fairy:2},ground:{fire:2,electric:2,grass:.5,poison:2,flying:0,bug:.5,rock:2,steel:2},flying:{electric:.5,grass:2,fighting:2,bug:2,rock:.5,steel:.5},psychic:{fighting:2,poison:2,psychic:.5,dark:0,steel:.5},bug:{fire:.5,grass:2,fighting:.5,poison:.5,flying:.5,psychic:2,ghost:.5,dark:2,steel:.5,fairy:.5},rock:{fire:2,ice:2,fighting:.5,ground:.5,flying:2,bug:2,steel:.5},ghost:{normal:0,psychic:2,ghost:2,dark:.5},dragon:{dragon:2,steel:.5,fairy:0},dark:{fighting:.5,psychic:2,ghost:2,dark:.5,fairy:.5},steel:{fire:.5,water:.5,electric:.5,ice:2,rock:2,steel:.5,fairy:2},fairy:{fire:.5,fighting:2,poison:.5,dragon:2,dark:2,steel:.5}
+};
+const MOVES=[
+["protect","방어","normal","status",0,100,["defense"]],["recover","HP회복","normal","status",0,100,["recovery"]],["roost","날개쉬기","flying","status",0,100,["recovery"]],["tailwind","순풍","flying","status",0,100,["speed"]],["thunderWave","전기자석파","electric","status",0,90,["speed","status"]],["willOWisp","도깨비불","fire","status",0,85,["defense","status"]],["swordsDance","칼춤","normal","status",0,100,["setup"]],["nastyPlot","나쁜음모","dark","status",0,100,["setup"]],["calmMind","명상","psychic","status",0,100,["setup","defense"]],["dragonDance","용의춤","dragon","status",0,100,["setup","speed"]],["spore","버섯포자","grass","status",0,100,["status","defense"]],["rainDance","비바라기","water","status",0,100,["weather"]],["sunnyDay","쾌청","fire","status",0,100,["weather"]],["sandstorm","모래바람","rock","status",0,100,["weather"]],
+["thunderbolt","10만볼트","electric","special",90,100,[]],["voltTackle","볼트태클","electric","physical",120,100,[]],["surf","파도타기","water","special",90,100,[]],["hydroPump","하이드로펌프","water","special",110,80,[]],["waterfall","폭포오르기","water","physical",80,100,[]],["flamethrower","화염방사","fire","special",90,100,[]],["fireBlast","불대문자","fire","special",110,85,[]],["flareBlitz","플레어드라이브","fire","physical",120,100,[]],["airSlash","에어슬래시","flying","special",75,95,[]],["braveBird","브레이브버드","flying","physical",120,100,[]],["energyBall","에너지볼","grass","special",90,100,[]],["gigaDrain","기가드레인","grass","special",75,100,["recovery"]],["sludgeBomb","오물폭탄","poison","special",90,100,[]],["shadowBall","섀도볼","ghost","special",80,100,[]],["dragonClaw","드래곤클로","dragon","physical",80,100,[]],["dracoMeteor","용성군","dragon","special",130,90,[]],["earthquake","지진","ground","physical",100,100,[]],["earthPower","대지의힘","ground","special",90,100,[]],["closeCombat","인파이트","fighting","physical",120,100,[]],["auraSphere","파동탄","fighting","special",80,100,[]],["psychic","사이코키네시스","psychic","special",90,100,[]],["moonblast","문포스","fairy","special",95,100,[]],["playRough","치근거리기","fairy","physical",90,90,[]],["rockSlide","스톤샤워","rock","physical",75,90,[]],["stoneEdge","스톤에지","rock","physical",100,80,[]],["crunch","깨물어부수기","dark","physical",80,100,[]],["darkPulse","악의파동","dark","special",80,100,[]],["meteorMash","코멧펀치","steel","physical",90,90,[]],["flashCannon","러스터캐논","steel","special",80,100,[]],["iceBeam","냉동빔","ice","special",90,100,[]],["icicleCrash","고드름떨구기","ice","physical",85,90,[]],["bugBuzz","벌레의야단법석","bug","special",90,100,[]],["xScissor","시저크로스","bug","physical",80,100,[]],["bulletPunch","불릿펀치","steel","physical",40,100,["priority"]],["iceShard","얼음뭉치","ice","physical",40,100,["priority"]],["uTurn","유턴","bug","physical",70,100,["pivot"]],["voltSwitch","볼트체인지","electric","special",70,100,["pivot"]]
+].map(([id,name,type,category,power,accuracy,tags])=>({id,name,type,category,power,accuracy,tags}));
+
+const MOVE=Object.fromEntries(MOVES.map(x=>[x.id,x]));
+
+const 필수전용기보완목록=[{"id":"last-respects","name":"성묘","type":"ghost","category":"physical","power":50,"accuracy":100,"tags":["lateGame"]},{"id":"wave-crash","name":"웨이브태클","type":"water","category":"physical","power":120,"accuracy":100,"tags":[]},{"id":"aqua-cutter","name":"아쿠아커터","type":"water","category":"physical","power":70,"accuracy":100,"tags":[]},{"id":"aqua-step","name":"아쿠아스텝","type":"water","category":"physical","power":80,"accuracy":100,"tags":["speed"]},{"id":"flower-trick","name":"트릭플라워","type":"grass","category":"physical","power":70,"accuracy":100,"tags":[]},{"id":"torch-song","name":"플레어송","type":"fire","category":"special","power":80,"accuracy":100,"tags":["setup"]},{"id":"armor-cannon","name":"아머캐논","type":"fire","category":"special","power":120,"accuracy":100,"tags":[]},{"id":"bitter-blade","name":"원념의칼","type":"fire","category":"physical","power":90,"accuracy":100,"tags":["recovery"]},{"id":"lumina-crash","name":"루미나콜리전","type":"psychic","category":"special","power":80,"accuracy":100,"tags":[]},{"id":"gigaton-hammer","name":"데카해머","type":"steel","category":"physical","power":160,"accuracy":100,"tags":[]},{"id":"salt-cure","name":"소금절이","type":"rock","category":"physical","power":40,"accuracy":100,"tags":["status"]},{"id":"rage-fist","name":"분노의주먹","type":"ghost","category":"physical","power":50,"accuracy":100,"tags":[]},{"id":"make-it-rain","name":"골드러시","type":"steel","category":"special","power":120,"accuracy":100,"tags":[]},{"id":"population-bomb","name":"찍찍베기","type":"normal","category":"physical","power":20,"accuracy":90,"tags":[]},{"id":"jet-punch","name":"제트펀치","type":"water","category":"physical","power":60,"accuracy":100,"tags":["priority"]},{"id":"kowtow-cleave","name":"도각참","type":"dark","category":"physical","power":85,"accuracy":100,"tags":[]},{"id":"twin-beam","name":"트윈빔","type":"psychic","category":"special","power":40,"accuracy":100,"tags":[]},{"id":"mortal-spin","name":"킬러스핀","type":"poison","category":"physical","power":30,"accuracy":100,"tags":["status"]},{"id":"revival-blessing","name":"회생의기도","type":"normal","category":"status","power":0,"accuracy":100,"tags":["recovery"]},{"id":"ceaseless-edge","name":"비검천중파","type":"dark","category":"physical","power":65,"accuracy":90,"tags":["hazard"]},{"id":"triple-arrows","name":"3연화살","type":"fighting","category":"physical","power":90,"accuracy":100,"tags":[]},{"id":"infernal-parade","name":"백귀야행","type":"ghost","category":"special","power":60,"accuracy":100,"tags":["status"]},{"id":"barb-barrage","name":"독침천발","type":"poison","category":"physical","power":60,"accuracy":100,"tags":["status"]},{"id":"esper-wing","name":"오라윙","type":"psychic","category":"special","power":80,"accuracy":100,"tags":["speed"]},{"id":"stone-axe","name":"암석액스","type":"rock","category":"physical","power":65,"accuracy":90,"tags":["hazard"]},{"id":"mountain-gale","name":"빙산바람","type":"ice","category":"physical","power":100,"accuracy":85,"tags":[]},{"id":"headlong-rush","name":"들이받기","type":"ground","category":"physical","power":120,"accuracy":100,"tags":[]},{"id":"victory-dance","name":"승리의춤","type":"fighting","category":"status","power":0,"accuracy":100,"tags":["setup","speed"]},{"id":"take-heart","name":"마음의눈물","type":"psychic","category":"status","power":0,"accuracy":100,"tags":["setup"]},{"id":"shelter","name":"농성","type":"steel","category":"status","power":0,"accuracy":100,"tags":["defense","setup"]},{"id":"chloroblast","name":"클로로블라스트","type":"grass","category":"special","power":150,"accuracy":95,"tags":[]},{"id":"dire-claw","name":"페이탈클로","type":"poison","category":"physical","power":80,"accuracy":100,"tags":["status"]},{"id":"psyshield-bash","name":"배리어러시","type":"psychic","category":"physical","power":70,"accuracy":90,"tags":["defense"]},{"id":"raging-fury","name":"대격분","type":"fire","category":"physical","power":120,"accuracy":100,"tags":[]},{"id":"spirit-break","name":"소울크래시","type":"fairy","category":"physical","power":75,"accuracy":100,"tags":[]},{"id":"false-surrender","name":"도게자슬램","type":"dark","category":"physical","power":80,"accuracy":100,"tags":[]},{"id":"obstruct","name":"블로킹","type":"dark","category":"status","power":0,"accuracy":100,"tags":["defense"]},{"id":"decorate","name":"데코레이션","type":"fairy","category":"status","power":0,"accuracy":100,"tags":["setup"]},{"id":"apple-acid","name":"사과산","type":"grass","category":"special","power":80,"accuracy":100,"tags":[]},{"id":"grav-apple","name":"G의힘","type":"grass","category":"physical","power":80,"accuracy":100,"tags":[]},{"id":"no-retreat","name":"배수의진","type":"fighting","category":"status","power":0,"accuracy":100,"tags":["setup","speed"]},{"id":"tar-shot","name":"타르샷","type":"rock","category":"status","power":0,"accuracy":100,"tags":["status"]},{"id":"stuff-cheeks","name":"볼가득넣기","type":"normal","category":"status","power":0,"accuracy":100,"tags":["defense"]},{"id":"tea-time","name":"다과회","type":"normal","category":"status","power":0,"accuracy":100,"tags":["support"]},{"id":"kings-shield","name":"킹실드","type":"steel","category":"status","power":0,"accuracy":100,"tags":["defense"]},{"id":"forest-s-curse","name":"숲의저주","type":"grass","category":"status","power":0,"accuracy":100,"tags":["status"]},{"id":"trick-or-treat","name":"핼러윈","type":"ghost","category":"status","power":0,"accuracy":100,"tags":["status"]},{"id":"flying-press","name":"플라잉프레스","type":"fighting","category":"physical","power":100,"accuracy":95,"tags":[]}];
+const 포켓몬별전용기연결={"basculegion-male":["last-respects","wave-crash","aqua-cutter"],"basculegion-female":["last-respects","wave-crash","aqua-cutter"],"houndstone":["last-respects"],"quaquaval":["aqua-step"],"meowscarada":["flower-trick"],"skeledirge":["torch-song"],"armarouge":["armor-cannon"],"ceruledge":["bitter-blade"],"espathra":["lumina-crash"],"tinkaton":["gigaton-hammer"],"garganacl":["salt-cure"],"annihilape":["rage-fist"],"gholdengo":["make-it-rain"],"maushold":["population-bomb"],"palafin":["jet-punch"],"kingambit":["kowtow-cleave"],"farigiraf":["twin-beam"],"glimmora":["mortal-spin"],"pawmot":["revival-blessing"],"samurott-hisui":["ceaseless-edge"],"decidueye-hisui":["triple-arrows"],"typhlosion-hisui":["infernal-parade"],"overqwil":["barb-barrage"],"braviary-hisui":["esper-wing"],"kleavor":["stone-axe"],"avalugg-hisui":["mountain-gale"],"ursaluna":["headlong-rush"],"lilligant-hisui":["victory-dance"],"goodra-hisui":["shelter"],"electrode-hisui":["chloroblast"],"sneasler":["dire-claw"],"wyrdeer":["psyshield-bash"],"arcanine-hisui":["raging-fury"],"grimmsnarl":["spirit-break","false-surrender"],"obstagoon":["obstruct"],"alcremie":["decorate"],"appletun":["apple-acid"],"flapple":["grav-apple"],"falinks":["no-retreat"],"coalossal":["tar-shot"],"greedent":["stuff-cheeks"],"polteageist":["tea-time"],"aegislash":["kings-shield"],"trevenant":["forest-s-curse"],"gourgeist":["trick-or-treat"],"hawlucha":["flying-press"]};
+
+필수전용기보완목록.forEach(기술=>{
+  MOVE[기술.id]=기술;
+  if(!MOVES.some(기존=>기존.id===기술.id))MOVES.push(기술);
+});
+let CHAMPIONS_MOVE_LIST=[...MOVES];
+
+let MOVE_DATA_READY=false;
+
+function normalizeMoveName(value){
+ return String(value||"").toLowerCase()
+  .replace(/[’']/g,"")
+  .replace(/[^a-z0-9]+/g,"")
+  .trim();
+}
+
+function moveTagsFromName(name,category){
+ const tags=[];
+ const n=String(name||"").toLowerCase();
+ if(category==="status"){
+   if(/protect|detect|shield|guard|screen|reflect|veil|defense|barrier/.test(n))tags.push("defense");
+   if(/recover|roost|heal|wish|rest|shore up|strength sap|milk drink|soft-boiled/.test(n))tags.push("recovery");
+   if(/agility|tailwind|trick room|thunder wave|electroweb|icy wind|rock tomb|string shot|speed/.test(n))tags.push("speed");
+   if(/dance|plot|mind|growth|shell smash|bulk up|coil|charge|howl|geomancy|setup/.test(n))tags.push("setup");
+   if(/rain|sunny|sandstorm|snowscape|hail|weather/.test(n))tags.push("weather");
+   if(/toxic|will-o-wisp|spore|sleep|stun|poison|yawn|confuse|hypnosis/.test(n))tags.push("status");
+ }
+ if(/u-turn|volt switch|flip turn|parting shot|chilly reception/.test(n))tags.push("pivot");
+ if(/quick attack|extreme speed|aqua jet|bullet punch|ice shard|sucker punch|mach punch|shadow sneak|accelerock|priority/.test(n))tags.push("priority");
+ return [...new Set(tags)];
+}
+
+async function fetchChampionsMoves(){
+ const status=document.getElementById("moveDataStatus");
+ status.textContent="한국어 기술목록 확인 중";
+
+ const cached=localStorage.getItem("포켓몬챔피언스_전체기술목록_한국어_2");
+ const cachedDate=localStorage.getItem("포켓몬챔피언스_전체기술목록_날짜_2");
+
+ if(cached){
+   try{
+     const data=JSON.parse(cached);
+     if(Array.isArray(data)&&data.length>300&&data.every(move=>/[가-힣]/.test(move.name))){
+       applyChampionsMoves(data);
+       status.textContent=`저장된 한국어 기술 ${data.length}개 사용 중${cachedDate?` · ${cachedDate}`:""}`;
+     }
+   }catch{}
+ }
+
+ try{
+   /*
+    * 1. 포켓몬 챔피언스 기술 사용 가능 여부:
+    *    불바피디아의 포켓몬 챔피언스 기술표를 사용합니다.
+    * 2. 한국어 기술명:
+    *    포케API 원본 한국어 이름 자료를 사용합니다.
+    *
+    * 두 자료를 기술의 영문 식별자로 결합하므로,
+    * 한국어 이름이 확인되지 않은 기술은 화면에 표시하지 않습니다.
+    */
+   const [availabilityResponse,namesResponse,movesResponse,typesResponse,classesResponse]=await Promise.all([
+     fetch("https://bulbapedia.bulbagarden.net/w/api.php?action=parse&page=List_of_moves_by_availability_in_Pok%C3%A9mon_Champions&prop=text&format=json&origin=*"),
+     fetch("https://raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv/move_names.csv"),
+     fetch("https://raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv/moves.csv"),
+     fetch("https://raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv/types.csv"),
+     fetch("https://raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv/move_damage_classes.csv")
+   ]);
+
+   if(!availabilityResponse.ok||!namesResponse.ok||!movesResponse.ok){
+     throw new Error("기술 자료를 불러오지 못했습니다.");
+   }
+
+   const availabilityJson=await availabilityResponse.json();
+   const availabilityDocument=new DOMParser().parseFromString(
+     availabilityJson.parse.text["*"],
+     "text/html"
+   );
+
+   function parseCsv(text){
+     const rows=[];
+     let row=[],cell="",quoted=false;
+     for(let index=0;index<text.length;index+=1){
+       const character=text[index];
+       if(character==='"'){
+         if(quoted&&text[index+1]==='"'){
+           cell+='"';
+           index+=1;
+         }else{
+           quoted=!quoted;
+         }
+       }else if(character===","&&!quoted){
+         row.push(cell);
+         cell="";
+       }else if((character==="\n"||character==="\r")&&!quoted){
+         if(character==="\r"&&text[index+1]==="\n")index+=1;
+         row.push(cell);
+         if(row.some(value=>value!==""))rows.push(row);
+         row=[];
+         cell="";
+       }else{
+         cell+=character;
+       }
+     }
+     if(cell||row.length){
+       row.push(cell);
+       rows.push(row);
+     }
+     const headers=rows.shift();
+     return rows.map(values=>Object.fromEntries(
+       headers.map((header,index)=>[header,values[index]??""])
+     ));
+   }
+
+   const [namesText,movesText,typesText,classesText]=await Promise.all([
+     namesResponse.text(),
+     movesResponse.text(),
+     typesResponse.text(),
+     classesResponse.text()
+   ]);
+
+   const moveNames=parseCsv(namesText);
+   const moves=parseCsv(movesText);
+   const types=parseCsv(typesText);
+   const damageClasses=parseCsv(classesText);
+
+   const koreanNameByMoveId=new Map(
+     moveNames
+       .filter(row=>row.local_language_id==="3"&&/[가-힣]/.test(row.name))
+       .map(row=>[row.move_id,row.name])
+   );
+
+   const typeById=new Map(
+     types.map(row=>[row.id,row.identifier])
+   );
+
+   const damageClassById=new Map(
+     damageClasses.map(row=>[row.id,row.identifier])
+   );
+
+   const moveByIdentifier=new Map();
+   moves.forEach(row=>{
+     const koreanName=koreanNameByMoveId.get(row.id);
+     if(!koreanName)return;
+
+     moveByIdentifier.set(normalizeMoveName(row.identifier),{
+       id:row.identifier,
+       name:koreanName,
+       type:typeById.get(row.type_id)||"normal",
+       category:damageClassById.get(row.damage_class_id)||"status",
+       power:Number(row.power)||0,
+       accuracy:Number(row.accuracy)||100
+     });
+   });
+
+   const availableIdentifiers=new Set();
+
+   [...availabilityDocument.querySelectorAll("table tr")].forEach(row=>{
+     const cells=[...row.querySelectorAll("td")];
+     if(cells.length<2)return;
+
+     const text=row.textContent||"";
+     if(!/[✔✓]|available/i.test(text))return;
+     if(/unavailable|not available|✘|×/i.test(text))return;
+
+     const moveLink=[...row.querySelectorAll("a")].find(link=>{
+       const href=link.getAttribute("href")||"";
+       return href.startsWith("/wiki/")&&!href.includes("File:");
+     });
+
+     const visibleName=(cells[1]?.textContent||cells[0]?.textContent||"").trim();
+     const title=moveLink?.getAttribute("title")||visibleName;
+     const href=moveLink?.getAttribute("href")||"";
+     const hrefName=decodeURIComponent(
+       href.replace(/^\/wiki\//,"").replace(/_/g," ")
+     );
+
+     [visibleName,title,hrefName].forEach(value=>{
+       const key=normalizeMoveName(
+         String(value)
+           .replace(/\s*\(move\)\s*$/i,"")
+           .replace(/\s*\(Pokémon\)\s*$/i,"")
+       );
+       if(key)availableIdentifiers.add(key);
+     });
+   });
+
+   const result=[];
+   const usedIds=new Set();
+
+   moveByIdentifier.forEach((move,identifierKey)=>{
+     const englishKey=normalizeMoveName(move.id);
+     if(!availableIdentifiers.has(identifierKey)&&!availableIdentifiers.has(englishKey)){
+       return;
+     }
+     if(!/[가-힣]/.test(move.name)||usedIds.has(move.id))return;
+
+     usedIds.add(move.id);
+     result.push({
+       ...move,
+       tags:moveTagsFromName(move.id,move.category)
+     });
+   });
+
+   /*
+    * 불바피디아 표 구조가 바뀌어 식별자 매칭 수가 지나치게 적을 경우,
+    * 화면에 영어 이름을 표시하지 않고 기존 한국어 기본 목록을 사용합니다.
+    */
+   if(result.length<300){
+     throw new Error(`한국어 기술 매칭 수가 부족합니다: ${result.length}`);
+   }
+
+   result.sort((first,second)=>first.name.localeCompare(second.name,"ko"));
+
+   localStorage.setItem(
+     "포켓몬챔피언스_전체기술목록_한국어_2",
+     JSON.stringify(result)
+   );
+   localStorage.setItem(
+     "포켓몬챔피언스_전체기술목록_날짜_2",
+     new Date().toLocaleDateString("ko-KR")
+   );
+
+   applyChampionsMoves(result);
+   status.textContent=`한국어 전체 기술 ${result.length}개 불러오기 완료`;
+ }catch(error){
+   /*
+    * 실패 시 영어 이름을 섞지 않습니다.
+    * HTML 안에 미리 들어 있는 한국어 기술만 사용합니다.
+    */
+   CHAMPIONS_MOVE_LIST=[...MOVES]
+     .filter(move=>/[가-힣]/.test(move.name))
+     .sort((first,second)=>first.name.localeCompare(second.name,"ko"));
+
+   MOVE_DATA_READY=true;
+   refreshAllMoveSelectors();
+   status.textContent=`한국어 기본 기술 ${CHAMPIONS_MOVE_LIST.length}개 사용 중 · 인터넷 연결 후 새로고침`;
+   console.warn(error);
+ }
+}
+function applyChampionsMoves(list){
+ const 병합목록=[...list];
+
+ 필수전용기보완목록.forEach(보완기술=>{
+   const 위치=병합목록.findIndex(기술=>기술.id===보완기술.id);
+   if(위치>=0)병합목록[위치]={...병합목록[위치],...보완기술};
+   else 병합목록.push(보완기술);
+   MOVE[보완기술.id]=보완기술;
+ });
+
+ 병합목록.forEach(기술=>{MOVE[기술.id]=기술});
+ CHAMPIONS_MOVE_LIST=병합목록
+   .filter(기술=>/[가-힣]/.test(기술.name))
+   .sort((앞,뒤)=>앞.name.localeCompare(뒤.name,"ko"));
+
+ MOVE_DATA_READY=true;
+ if(typeof PKM!=="undefined"){
+   applySignatureLearnsets();
+ }
+ refreshAllMoveSelectors();
+}
+
+
+function applySignatureLearnsets(){
+ Object.entries(포켓몬별전용기연결).forEach(([포켓몬식별자,기술목록])=>{
+   const 포켓몬=PKM[포켓몬식별자];
+   if(!포켓몬)return;
+
+   포켓몬.moves=포켓몬.moves||[];
+   기술목록.forEach(기술식별자=>{
+     if(MOVE[기술식별자]&&!포켓몬.moves.includes(기술식별자)){
+       포켓몬.moves.unshift(기술식별자);
+     }
+   });
+ });
+}
+
+function globalMoveOptions(selectedId=""){
+ const groups={};
+ CHAMPIONS_MOVE_LIST.filter(move=>/[가-힣]/.test(move.name)).forEach(move=>{
+   const type=TYPE_KO[move.type]||"기타";
+   if(!groups[type])groups[type]=[];
+   groups[type].push(move);
+ });
+ return Object.entries(groups).map(([type,moves])=>
+   `<optgroup label="${type}">${moves.map(move=>{
+     const info=move.category==="status"
+       ?"변화"
+       :`${move.category==="physical"?"물리":"특수"} · 위력 ${move.power||"-"} · 명중 ${move.accuracy||"-"}`;
+     const 전용기=필수전용기보완목록.some(기술=>기술.id===move.id)?" · 전용기/신규기":"";
+     return `<option value="${move.id}" ${move.id===selectedId?"selected":""}>${move.name}${전용기} · ${info}</option>`;
+   }).join("")}</optgroup>`
+ ).join("");
+}
+
+function refreshAllMoveSelectors(){
+ document.querySelectorAll(".slot").forEach(slot=>{
+   const pokemonSelect=slot.querySelector(".pkm");
+   if(!pokemonSelect?.value||pokemonSelect.dataset.kind==="enemy")return;
+   const current=[...slot.querySelectorAll(".move")].map(s=>s.value);
+   slot.querySelectorAll(".move").forEach((select,index)=>{
+     select.innerHTML=`<option value="">기술 선택</option>${globalMoveOptions(current[index])}`;
+     if(current[index]&&MOVE[current[index]])select.value=current[index];
+   });
+   updateSummary(slot);
+ });
+}
+
+
+const ABILITIES=[
+["static","정전기",{support:4,speed:3}],["lightningRod","피뢰침",{defense:8,special:4}],["blaze","맹화",{offense:5}],["solarPower","선파워",{offense:10,weather:5}],["torrent","급류",{offense:5}],["rainDish","젖은접시",{defense:5,recovery:5,weather:3}],["overgrow","심록",{offense:5}],["chlorophyll","엽록소",{speed:10,weather:5}],["cursedBody","저주받은바디",{defense:5,support:4}],["multiscale","멀티스케일",{defense:12}],["roughSkin","까칠한피부",{defense:5,offense:3}],["innerFocus","정신력",{support:3}],["justified","정의의마음",{offense:6}],["trace","트레이스",{support:6}],["sandStream","모래날림",{weather:10,defense:5}],["clearBody","클리어바디",{offense:4,defense:4}],["levitate","부유",{defense:10}],["pressure","프레셔",{defense:4,support:3}],["pixilate","페어리스킨",{offense:8}],["thickFat","두꺼운지방",{defense:9}],["flameBody","불꽃몸",{defense:6,support:4}],["regenerator","재생력",{recovery:11,defense:5}],["protean","변환자재",{offense:9}],["technician","테크니션",{offense:8}],["sereneGrace","하늘의은총",{support:7}],["toughClaws","단단한발톱",{offense:11}],["speedBoost","가속",{speed:12}],["swiftSwim","쓱쓱",{speed:12,weather:5}],["hugePower","천하장사",{physical:18}],["sheerForce","우격다짐",{offense:10}]
+].map(([id,name,bonuses])=>({id,name,bonuses}));
+const ABILITY=Object.fromEntries(ABILITIES.map(x=>[x.id,x]));
+
+const ITEMS=[
+["none","도구 없음","normal",{}],
+["silkScarf","실크스카프","normal",{normal:10}],["miracleSeed","기적의씨","normal",{grass:10}],
+["charcoal","목탄","normal",{fire:10}],["mysticWater","신비의물방울","normal",{water:10}],
+["magnet","자석","normal",{electric:10}],["silverPowder","은빛가루","normal",{bug:10}],
+["sharpBeak","예리한부리","normal",{flying:10}],["hardStone","딱딱한돌","normal",{rock:10}],
+["poisonBarb","독바늘","normal",{poison:10}],["softSand","부드러운모래","normal",{ground:10}],
+["neverMeltIce","녹지않는얼음","normal",{ice:10}],["blackBelt","검은띠","normal",{fighting:10}],
+["twistedSpoon","휘어진스푼","normal",{psychic:10}],["spellTag","저주의부적","normal",{ghost:10}],
+["dragonFang","용의이빨","normal",{dragon:10}],["blackGlasses","검은안경","normal",{dark:10}],
+["metalCoat","금속코트","normal",{steel:10}],["fairyFeather","요정의날개","normal",{fairy:10}],
+["mentalHerb","멘탈허브","normal",{support:7}],["whiteHerb","하양허브","normal",{support:6}],
+["shellBell","조개껍질방울","normal",{recovery:5}],["leftovers","먹다남은음식","normal",{recovery:8,defense:4}],
+["focusSash","기합의띠","normal",{defense:10}],["focusBand","기합의머리띠","normal",{defense:4}],
+["choiceScarf","구애스카프","normal",{speed:14}],["sitrusBerry","자뭉열매","normal",{recovery:7}],
+["kingsRock","왕의징표석","normal",{support:4}],
+["cheriBerry","버치열매","normal",{support:3}],["chestoBerry","유루열매","normal",{support:3}],
+["pechaBerry","복슝열매","normal",{support:3}],["rawstBerry","복분열매","normal",{support:3}],
+["aspearBerry","배리열매","normal",{support:3}],["persimBerry","시몬열매","normal",{support:3}],
+["lumBerry","리샘열매","normal",{support:7}],
+["occaBerry","오카열매","normal",{defense:5}],["passhoBerry","꼬시개열매","normal",{defense:5}],
+["wacanBerry","초나열매","normal",{defense:5}],["rindoBerry","린드열매","normal",{defense:5}],
+["yacheBerry","플카열매","normal",{defense:5}],["chopleBerry","로플열매","normal",{defense:5}],
+["kebiaBerry","으름열매","normal",{defense:5}],["shucaBerry","슈캐열매","normal",{defense:5}],
+["cobaBerry","바코열매","normal",{defense:5}],["payapaBerry","야파열매","normal",{defense:5}],
+["tangaBerry","리체열매","normal",{defense:5}],["chartiBerry","루미열매","normal",{defense:5}],
+["kasibBerry","수불열매","normal",{defense:5}],["habanBerry","하반열매","normal",{defense:5}],
+["colburBerry","마코열매","normal",{defense:5}],["babiriBerry","바리비열매","normal",{defense:5}],
+["roseliBerry","로셀열매","normal",{defense:5}],["chilanBerry","카리열매","normal",{defense:5}],
+["wideLens","광각렌즈","normal",{accuracy:10}],["muscleBand","힘의머리띠","normal",{physical:10}],
+["wiseGlasses","박식안경","normal",{special:10}],["expertBelt","달인의띠","normal",{offense:8}],
+["lightClay","빛의점토","normal",{support:8,defense:4}],["lifeOrb","생명의구슬","normal",{offense:11,defense:-3}],
+["zoomLens","포커스렌즈","normal",{accuracy:12}],["ironBall","검은철구","normal",{speed:-10}],
+["icyRock","차가운바위","normal",{weather:7}],["smoothRock","보송보송바위","normal",{weather:7}],
+["heatRock","뜨거운바위","normal",{weather:7}],["dampRock","축축한바위","normal",{weather:7}],
+["shedShell","아름다운허물","normal",{support:5}],["bigRoot","큰뿌리","normal",{recovery:6}],
+["charizarditeX","리자몽나이트X","mega",{}],["charizarditeY","리자몽나이트Y","mega",{}],
+["blastoisinite","거북왕나이트","mega",{}],["venusaurite","이상해꽃나이트","mega",{}],
+["gengarite","팬텀나이트","mega",{}],["dragoniteite","망나뇽나이트","mega",{}],
+["garchompite","한카리아스나이트","mega",{}],["lucarionite","루카리오나이트","mega",{}],
+["gardevoirite","가디안나이트","mega",{}],["tyranitarite","마기라스나이트","mega",{}],
+["metagrossite","메타그로스나이트","mega",{}],["swampertite","대짱이나이트","mega",{}],
+["blazikenite","번치코나이트","mega",{}],["mawilite","입치트나이트","mega",{}]
+].map(([id,name,category,bonuses])=>({id,name,category,bonuses}));
+const ITEM=Object.fromEntries(ITEMS.map(x=>[x.id,x]));
+
+function P(id,name,types,stats,roles,abilities,moves,megaForms=[]){return{id,name,types,stats,roles,abilities,moves,megaForms,regulations:["M-B"]}}
+const POKEMON=[
+P("charizard","리자몽",["fire","flying"],[78,84,78,109,85,100],["special","speed"],["blaze","solarPower"],["flamethrower","fireBlast","airSlash","dragonClaw","sunnyDay","roost","protect","dragonDance"],[
+{id:"megaCharizardX",name:"메가리자몽X",stone:"charizarditeX",types:["fire","dragon"],stats:[78,130,111,130,85,100],ability:"toughClaws"},
+{id:"megaCharizardY",name:"메가리자몽Y",stone:"charizarditeY",types:["fire","flying"],stats:[78,104,78,159,115,100],ability:"solarPower"}]),
+P("blastoise","거북왕",["water"],[79,83,100,85,105,78],["physicalTank","specialTank","support"],["torrent","rainDish"],["surf","hydroPump","iceBeam","auraSphere","rainDance","protect","recover","waterfall"],[{id:"megaBlastoise",name:"메가거북왕",stone:"blastoisinite",types:["water"],stats:[79,103,120,135,115,78],ability:"sheerForce"}]),
+P("venusaur","이상해꽃",["grass","poison"],[80,82,83,100,100,80],["special","specialTank","support"],["overgrow","chlorophyll"],["energyBall","gigaDrain","sludgeBomb","earthPower","sunnyDay","protect","calmMind","recover"],[{id:"megaVenusaur",name:"메가이상해꽃",stone:"venusaurite",types:["grass","poison"],stats:[80,100,123,122,120,80],ability:"thickFat"}]),
+P("gengar","팬텀",["ghost","poison"],[60,65,60,130,75,110],["special","speed"],["cursedBody"],["shadowBall","sludgeBomb","thunderbolt","energyBall","willOWisp","nastyPlot","protect","thunderWave"],[{id:"megaGengar",name:"메가팬텀",stone:"gengarite",types:["ghost","poison"],stats:[60,65,80,170,95,130],ability:"sheerForce"}]),
+P("dragonite","망나뇽",["dragon","flying"],[91,134,95,100,100,80],["physical","physicalTank"],["multiscale","innerFocus"],["dragonClaw","earthquake","fireBlast","iceBeam","dragonDance","roost","protect","tailwind"],[{id:"megaDragonite",name:"메가망나뇽",stone:"dragoniteite",types:["dragon","flying"],stats:[91,154,115,120,120,100],ability:"innerFocus"}]),
+P("garchomp","한카리아스",["dragon","ground"],[108,130,95,80,85,102],["physical","speed"],["roughSkin"],["earthquake","dragonClaw","stoneEdge","fireBlast","swordsDance","sandstorm","protect","rockSlide"],[{id:"megaGarchomp",name:"메가한카리아스",stone:"garchompite",types:["dragon","ground"],stats:[108,170,115,120,95,92],ability:"sandStream"}]),
+P("lucario","루카리오",["fighting","steel"],[70,110,70,115,70,90],["physical","special"],["innerFocus","justified"],["closeCombat","auraSphere","meteorMash","flashCannon","darkPulse","swordsDance","nastyPlot","protect"],[{id:"megaLucario",name:"메가루카리오",stone:"lucarionite",types:["fighting","steel"],stats:[70,145,88,140,70,112],ability:"toughClaws"}]),
+P("gardevoir","가디안",["psychic","fairy"],[68,65,65,125,115,80],["special","specialTank","support"],["trace"],["psychic","moonblast","shadowBall","thunderbolt","calmMind","protect","recover","thunderWave"],[{id:"megaGardevoir",name:"메가가디안",stone:"gardevoirite",types:["psychic","fairy"],stats:[68,85,65,165,135,100],ability:"pixilate"}]),
+P("tyranitar","마기라스",["rock","dark"],[100,134,110,95,100,61],["physical","physicalTank","specialTank"],["sandStream"],["stoneEdge","rockSlide","crunch","earthquake","iceBeam","dragonDance","sandstorm","protect"],[{id:"megaTyranitar",name:"메가마기라스",stone:"tyranitarite",types:["rock","dark"],stats:[100,164,150,95,120,71],ability:"sandStream"}]),
+P("metagross","메타그로스",["steel","psychic"],[80,135,130,95,90,70],["physical","physicalTank"],["clearBody"],["meteorMash","psychic","earthquake","rockSlide","bulletPunch","protect","iceBeam","shadowBall"],[{id:"megaMetagross",name:"메가메타그로스",stone:"metagrossite",types:["steel","psychic"],stats:[80,145,150,105,110,110],ability:"toughClaws"}]),
+P("rotomWash","워시로토무",["electric","water"],[50,65,107,105,107,86],["special","physicalTank","specialTank","support"],["levitate"],["hydroPump","thunderbolt","voltSwitch","darkPulse","willOWisp","thunderWave","rainDance","protect"]),
+P("corviknight","아머까오",["flying","steel"],[98,87,105,53,85,67],["physicalTank","support","speed"],["pressure"],["braveBird","uTurn","roost","tailwind","protect","ironDefense","bodyPress","sandstorm"]),
+P("sylveon","님피아",["fairy"],[95,65,65,110,130,60],["special","specialTank","support"],["pixilate"],["moonblast","psychic","shadowBall","calmMind","protect","recover","thunderWave","rainDance"]),
+P("mamoswine","맘모꾸리",["ice","ground"],[110,130,80,70,60,80],["physical"],["thickFat"],["earthquake","icicleCrash","iceShard","stoneEdge","rockSlide","protect","sandstorm","swordsDance"]),
+P("volcarona","불카모스",["bug","fire"],[85,60,65,135,105,100],["special","specialTank","speed"],["flameBody"],["bugBuzz","flamethrower","gigaDrain","psychic","calmMind","roost","sunnyDay","protect"]),
+P("amoonguss","뽀록나",["grass","poison"],[114,85,70,85,80,30],["physicalTank","specialTank","support"],["regenerator"],["gigaDrain","sludgeBomb","spore","protect","rainDance","sunnyDay","clearSmog","recover"]),
+P("greninja","개굴닌자",["water","dark"],[72,95,67,103,71,122],["physical","special","speed"],["torrent","protean"],["hydroPump","darkPulse","iceBeam","uTurn","gigaDrain","rockSlide","nastyPlot","protect"]),
+P("scizor","핫삼",["bug","steel"],[70,130,100,55,80,65],["physical","physicalTank"],["technician"],["bulletPunch","xScissor","uTurn","closeCombat","swordsDance","roost","protect","ironDefense"]),
+P("togekiss","토게키스",["fairy","flying"],[85,50,95,120,115,80],["special","specialTank","support","speed"],["sereneGrace"],["airSlash","moonblast","flamethrower","auraSphere","tailwind","thunderWave","roost","protect"]),
+P("swampert","대짱이",["water","ground"],[100,110,90,85,90,60],["physical","physicalTank"],["torrent"],["waterfall","earthquake","iceBeam","rockSlide","rainDance","protect","icePunch","stealthRock"],[{id:"megaSwampert",name:"메가대짱이",stone:"swampertite",types:["water","ground"],stats:[100,150,110,95,110,70],ability:"swiftSwim"}]),
+P("blaziken","번치코",["fire","fighting"],[80,120,70,110,70,80],["physical","special","speed"],["blaze","speedBoost"],["flareBlitz","closeCombat","fireBlast","auraSphere","swordsDance","protect","rockSlide","thunderPunch"],[{id:"megaBlaziken",name:"메가번치코",stone:"blazikenite",types:["fire","fighting"],stats:[80,160,80,130,80,100],ability:"speedBoost"}]),
+P("mawile","입치트",["steel","fairy"],[50,85,85,55,55,50],["physical","physicalTank"],["hugePower"],["playRough","meteorMash","crunch","swordsDance","protect","thunderPunch","icePunch","ironDefense"],[{id:"megaMawile",name:"메가입치트",stone:"mawilite",types:["steel","fairy"],stats:[50,105,125,55,95,50],ability:"hugePower"}])
+];
+const PKM=Object.fromEntries(POKEMON.map(x=>[x.id,x]));
+
+
+[["toxic","맹독","poison","status",0,90,["status"]],["venoshock","베놈쇼크","poison","special",65,100,[]]].forEach(([id,name,type,category,power,accuracy,tags])=>MOVE[id]={id,name,type,category,power,accuracy,tags});
+
+const FULL_MB_ROSTER=[{"name":"Venusaur","types":["grass","poison"],"ko":"이상해꽃"},{"name":"Charizard","types":["fire","flying"],"ko":"리자몽"},{"name":"Blastoise","types":["water"],"ko":"거북왕"},{"name":"Beedrill","types":["bug","poison"],"ko":"독침붕"},{"name":"Pidgeot","types":["normal","flying"],"ko":"피죤투"},{"name":"Arbok","types":["poison"],"ko":"아보크"},{"name":"Pikachu","types":["electric"],"ko":"피카츄"},{"name":"Raichu","types":["electric"],"ko":"라이츄"},{"name":"Raichu-Alola","types":["electric","psychic"],"ko":"라이츄(알로라의 모습)"},{"name":"Clefable","types":["fairy"],"ko":"픽시"},{"name":"Ninetales","types":["fire"],"ko":"나인테일"},{"name":"Ninetales-Alola","types":["ice","fairy"],"ko":"나인테일(알로라의 모습)"},{"name":"Vileplume","types":["grass","poison"],"ko":"라플레시아"},{"name":"Arcanine","types":["fire"],"ko":"윈디"},{"name":"Arcanine-Hisui","types":["fire","rock"],"ko":"윈디(히스이의 모습)"},{"name":"Alakazam","types":["psychic"],"ko":"후딘"},{"name":"Machamp","types":["fighting"],"ko":"괴력몬"},{"name":"Victreebel","types":["grass","poison"],"ko":"우츠보트"},{"name":"Slowbro","types":["water","psychic"],"ko":"야도란"},{"name":"Slowbro-Galar","types":["poison","psychic"],"ko":"야도란(가라르의 모습)"},{"name":"Gengar","types":["ghost","poison"],"ko":"팬텀"},{"name":"Kangaskhan","types":["normal"],"ko":"캥카"},{"name":"Starmie","types":["water","psychic"],"ko":"아쿠스타"},{"name":"Pinsir","types":["bug"],"ko":"쁘사이저"},{"name":"Tauros","types":["normal"],"ko":"켄타로스"},{"name":"Tauros-Paldea-Combat","types":["fighting"],"ko":"켄타로스(팔데아의 모습·컴뱃종)"},{"name":"Tauros-Paldea-Blaze","types":["fighting","fire"],"ko":"켄타로스(팔데아의 모습·블레이즈종)"},{"name":"Tauros-Paldea-Aqua","types":["fighting","water"],"ko":"켄타로스(팔데아의 모습·워터종)"},{"name":"Gyarados","types":["water","flying"],"ko":"갸라도스"},{"name":"Ditto","types":["normal"],"ko":"메타몽"},{"name":"Vaporeon","types":["water"],"ko":"샤미드"},{"name":"Jolteon","types":["electric"],"ko":"쥬피썬더"},{"name":"Flareon","types":["fire"],"ko":"부스터"},{"name":"Aerodactyl","types":["rock","flying"],"ko":"프테라"},{"name":"Snorlax","types":["normal"],"ko":"잠만보"},{"name":"Dragonite","types":["dragon","flying"],"ko":"망나뇽"},{"name":"Meganium","types":["grass"],"ko":"메가니움"},{"name":"Typhlosion","types":["fire"],"ko":"블레이범"},{"name":"Typhlosion-Hisui","types":["fire","ghost"],"ko":"블레이범(히스이의 모습)"},{"name":"Feraligatr","types":["water"],"ko":"장크로다일"},{"name":"Ariados","types":["bug","poison"],"ko":"아리아도스"},{"name":"Ampharos","types":["electric"],"ko":"전룡"},{"name":"Azumarill","types":["water","fairy"],"ko":"마릴리"},{"name":"Politoed","types":["water"],"ko":"왕구리"},{"name":"Espeon","types":["psychic"],"ko":"에브이"},{"name":"Umbreon","types":["dark"],"ko":"블래키"},{"name":"Slowking","types":["water","psychic"],"ko":"야도킹"},{"name":"Slowking-Galar","types":["poison","psychic"],"ko":"야도킹(가라르의 모습)"},{"name":"Forretress","types":["bug","steel"],"ko":"쏘콘"},{"name":"Steelix","types":["steel","ground"],"ko":"강철톤"},{"name":"Qwilfish","types":["water","poison"],"ko":"침바루"},{"name":"Scizor","types":["bug","steel"],"ko":"핫삼"},{"name":"Heracross","types":["bug","fighting"],"ko":"헤라크로스"},{"name":"Skarmory","types":["steel","flying"],"ko":"무장조"},{"name":"Houndoom","types":["dark","fire"],"ko":"헬가"},{"name":"Tyranitar","types":["rock","dark"],"ko":"마기라스"},{"name":"Sceptile","types":["grass"],"ko":"나무킹"},{"name":"Blaziken","types":["fire","fighting"],"ko":"번치코"},{"name":"Swampert","types":["water","ground"],"ko":"대짱이"},{"name":"Pelipper","types":["water","flying"],"ko":"패리퍼"},{"name":"Gardevoir","types":["psychic","fairy"],"ko":"가디안"},{"name":"Sableye","types":["dark","ghost"],"ko":"깜까미"},{"name":"Mawile","types":["steel","fairy"],"ko":"입치트"},{"name":"Aggron","types":["steel","rock"],"ko":"보스로라"},{"name":"Medicham","types":["fighting","psychic"],"ko":"요가램"},{"name":"Manectric","types":["electric"],"ko":"썬더볼트"},{"name":"Sharpedo","types":["water","dark"],"ko":"샤크니아"},{"name":"Camerupt","types":["fire","ground"],"ko":"폭타"},{"name":"Torkoal","types":["fire"],"ko":"코터스"},{"name":"Altaria","types":["dragon","flying"],"ko":"파비코리"},{"name":"Milotic","types":["water"],"ko":"밀로틱"},{"name":"Castform","types":["normal"],"ko":"캐스퐁"},{"name":"Banette","types":["ghost"],"ko":"다크펫"},{"name":"Chimecho","types":["psychic"],"ko":"치렁"},{"name":"Absol","types":["dark"],"ko":"앱솔"},{"name":"Glalie","types":["ice"],"ko":"얼음귀신"},{"name":"Metagross","types":["steel","psychic"],"ko":"메타그로스"},{"name":"Torterra","types":["grass","ground"],"ko":"토대부기"},{"name":"Infernape","types":["fire","fighting"],"ko":"초염몽"},{"name":"Empoleon","types":["water","steel"],"ko":"엠페르트"},{"name":"Staraptor","types":["normal","flying"],"ko":"찌르호크"},{"name":"Luxray","types":["electric"],"ko":"렌트라"},{"name":"Roserade","types":["grass","poison"],"ko":"로즈레이드"},{"name":"Rampardos","types":["rock"],"ko":"램펄드"},{"name":"Bastiodon","types":["rock","steel"],"ko":"바리톱스"},{"name":"Lopunny","types":["normal"],"ko":"이어롭"},{"name":"Spiritomb","types":["ghost","dark"],"ko":"화강돌"},{"name":"Garchomp","types":["dragon","ground"],"ko":"한카리아스"},{"name":"Lucario","types":["fighting","steel"],"ko":"루카리오"},{"name":"Hippowdon","types":["ground"],"ko":"하마돈"},{"name":"Toxicroak","types":["poison","fighting"],"ko":"독개굴"},{"name":"Abomasnow","types":["grass","ice"],"ko":"눈설왕"},{"name":"Weavile","types":["dark","ice"],"ko":"포푸니라"},{"name":"Rhyperior","types":["ground","rock"],"ko":"거대코뿌리"},{"name":"Leafeon","types":["grass"],"ko":"리피아"},{"name":"Glaceon","types":["ice"],"ko":"글레이시아"},{"name":"Gliscor","types":["ground","flying"],"ko":"글라이온"},{"name":"Mamoswine","types":["ice","ground"],"ko":"맘모꾸리"},{"name":"Gallade","types":["psychic","fighting"],"ko":"엘레이드"},{"name":"Froslass","types":["ice","ghost"],"ko":"눈여아"},{"name":"Rotom","types":["electric","ghost"],"ko":"로토무"},{"name":"Serperior","types":["grass"],"ko":"샤로다"},{"name":"Emboar","types":["fire","fighting"],"ko":"염무왕"},{"name":"Samurott","types":["water"],"ko":"대검귀"},{"name":"Samurott-Hisui","types":["water","dark"],"ko":"대검귀(히스이의 모습)"},{"name":"Watchog","types":["normal"],"ko":"보르그"},{"name":"Liepard","types":["dark"],"ko":"레파르다스"},{"name":"Simisage","types":["grass"],"ko":"야나키"},{"name":"Simisear","types":["fire"],"ko":"바오키"},{"name":"Simipour","types":["water"],"ko":"앗차키"},{"name":"Musharna","types":["psychic"],"ko":"몽얌나"},{"name":"Excadrill","types":["ground","steel"],"ko":"몰드류"},{"name":"Audino","types":["normal"],"ko":"다부니"},{"name":"Conkeldurr","types":["fighting"],"ko":"노보청"},{"name":"Scolipede","types":["bug","poison"],"ko":"펜드라"},{"name":"Whimsicott","types":["grass","fairy"],"ko":"엘풍"},{"name":"Krookodile","types":["ground","dark"],"ko":"악비아르"},{"name":"Scrafty","types":["dark","fighting"],"ko":"곤율거니"},{"name":"Cofagrigus","types":["ghost"],"ko":"데스니칸"},{"name":"Garbodor","types":["poison"],"ko":"더스트나"},{"name":"Zoroark","types":["dark"],"ko":"조로아크"},{"name":"Zoroark-Hisui","types":["normal","ghost"],"ko":"조로아크(히스이의 모습)"},{"name":"Reuniclus","types":["psychic"],"ko":"란쿨루스"},{"name":"Vanilluxe","types":["ice"],"ko":"배바닐라"},{"name":"Emolga","types":["electric","flying"],"ko":"에몽가"},{"name":"Eelektross","types":["electric"],"ko":"저리더프"},{"name":"Chandelure","types":["ghost","fire"],"ko":"샹델라"},{"name":"Beartic","types":["ice"],"ko":"툰베어"},{"name":"Stunfisk","types":["ground","electric"],"ko":"메더"},{"name":"Stunfisk-Galar","types":["ground","steel"],"ko":"메더(가라르의 모습)"},{"name":"Golurk","types":["ground","ghost"],"ko":"골루그"},{"name":"Hydreigon","types":["dark","dragon"],"ko":"삼삼드래"},{"name":"Volcarona","types":["bug","fire"],"ko":"불카모스"},{"name":"Chesnaught","types":["grass","fighting"],"ko":"브리가론"},{"name":"Delphox","types":["fire","psychic"],"ko":"마폭시"},{"name":"Greninja","types":["water","dark"],"ko":"개굴닌자"},{"name":"Diggersby","types":["normal","ground"],"ko":"파르토"},{"name":"Talonflame","types":["fire","flying"],"ko":"파이어로"},{"name":"Vivillon","types":["bug","flying"],"ko":"비비용"},{"name":"Pyroar","types":["fire","normal"],"ko":"화염레오"},{"name":"Floette-Eternal","types":["fairy"],"ko":"플라엣테(영원의꽃)"},{"name":"Florges","types":["fairy"],"ko":"플라제스"},{"name":"Pangoro","types":["fighting","dark"],"ko":"부란다"},{"name":"Furfrou","types":["normal"],"ko":"트리미앙"},{"name":"Meowstic-Male","types":["psychic"],"ko":"냐오닉스(수컷)"},{"name":"Meowstic-Female","types":["psychic"],"ko":"냐오닉스(암컷)"},{"name":"Aegislash","types":["steel","ghost"],"ko":"킬가르도"},{"name":"Aromatisse","types":["fairy"],"ko":"프레프티르"},{"name":"Slurpuff","types":["fairy"],"ko":"나루림"},{"name":"Malamar","types":["dark","psychic"],"ko":"칼라마네로"},{"name":"Barbaracle","types":["rock","water"],"ko":"거북손데스"},{"name":"Dragalge","types":["poison","dragon"],"ko":"드래캄"},{"name":"Clawitzer","types":["water"],"ko":"블로스터"},{"name":"Heliolisk","types":["electric","normal"],"ko":"일레도리자드"},{"name":"Tyrantrum","types":["rock","dragon"],"ko":"견고라스"},{"name":"Aurorus","types":["rock","ice"],"ko":"아마루르가"},{"name":"Sylveon","types":["fairy"],"ko":"님피아"},{"name":"Hawlucha","types":["fighting","flying"],"ko":"루차불"},{"name":"Dedenne","types":["electric","fairy"],"ko":"데덴네"},{"name":"Goodra","types":["dragon"],"ko":"미끄래곤"},{"name":"Goodra-Hisui","types":["steel","dragon"],"ko":"미끄래곤(히스이의 모습)"},{"name":"Klefki","types":["steel","fairy"],"ko":"클레피"},{"name":"Trevenant","types":["ghost","grass"],"ko":"대로트"},{"name":"Gourgeist","types":["ghost","grass"],"ko":"펌킨인"},{"name":"Avalugg","types":["ice"],"ko":"크레베이스"},{"name":"Avalugg-Hisui","types":["ice","rock"],"ko":"크레베이스(히스이의 모습)"},{"name":"Noivern","types":["flying","dragon"],"ko":"음번"},{"name":"Decidueye","types":["grass","ghost"],"ko":"모크나이퍼"},{"name":"Decidueye-Hisui","types":["grass","fighting"],"ko":"모크나이퍼(히스이의 모습)"},{"name":"Incineroar","types":["fire","dark"],"ko":"어흥염"},{"name":"Primarina","types":["water","fairy"],"ko":"누리레느"},{"name":"Toucannon","types":["normal","flying"],"ko":"왕큰부리"},{"name":"Crabominable","types":["fighting","ice"],"ko":"모단단게"},{"name":"Lycanroc","types":["rock"],"ko":"루가루암"},{"name":"Toxapex","types":["poison","water"],"ko":"더시마사리"},{"name":"Mudsdale","types":["ground"],"ko":"만마드"},{"name":"Araquanid","types":["water","bug"],"ko":"깨비물거미"},{"name":"Salazzle","types":["poison","fire"],"ko":"염뉴트"},{"name":"Tsareena","types":["grass"],"ko":"달코퀸"},{"name":"Oranguru","types":["normal","psychic"],"ko":"하랑우탄"},{"name":"Passimian","types":["fighting"],"ko":"내던숭이"},{"name":"Mimikyu","types":["ghost","fairy"],"ko":"따라큐"},{"name":"Drampa","types":["normal","dragon"],"ko":"할비롱"},{"name":"Kommo-o","types":["dragon","fighting"],"ko":"짜랑고우거"},{"name":"Corviknight","types":["flying","steel"],"ko":"아머까오"},{"name":"Flapple","types":["grass","dragon"],"ko":"애프룡"},{"name":"Appletun","types":["grass","dragon"],"ko":"단지래플"},{"name":"Sandaconda","types":["ground"],"ko":"사다이사"},{"name":"Polteageist","types":["ghost"],"ko":"포트데스"},{"name":"Hatterene","types":["psychic","fairy"],"ko":"브리무음"},{"name":"Grimmsnarl","types":["dark","fairy"],"ko":"오롱털"},{"name":"Mr-Rime","types":["ice","psychic"],"ko":"마임꽁꽁"},{"name":"Runerigus","types":["ground","ghost"],"ko":"데스판"},{"name":"Alcremie","types":["fairy"],"ko":"마휘핑"},{"name":"Falinks","types":["fighting"],"ko":"대여르"},{"name":"Morpeko","types":["electric","dark"],"ko":"모르페코"},{"name":"Dragapult","types":["dragon","ghost"],"ko":"드래펄트"},{"name":"Wyrdeer","types":["normal","psychic"],"ko":"신비록"},{"name":"Kleavor","types":["bug","rock"],"ko":"사마자르"},{"name":"Basculegion-Male","types":["water","ghost"],"ko":"대쓰여너(수컷)"},{"name":"Basculegion-Female","types":["water","ghost"],"ko":"대쓰여너(암컷)"},{"name":"Sneasler","types":["fighting","poison"],"ko":"포푸니크"},{"name":"Overqwil","types":["dark","poison"],"ko":"장침바루"},{"name":"Meowscarada","types":["grass","dark"],"ko":"마스카나"},{"name":"Skeledirge","types":["fire","ghost"],"ko":"라우드본"},{"name":"Quaquaval","types":["water","fighting"],"ko":"웨이니발"},{"name":"Maushold","types":["normal"],"ko":"파밀리쥐"},{"name":"Garganacl","types":["rock"],"ko":"콜로솔트"},{"name":"Armarouge","types":["fire","psychic"],"ko":"카디나르마"},{"name":"Ceruledge","types":["fire","ghost"],"ko":"파라블레이즈"},{"name":"Bellibolt","types":["electric"],"ko":"찌리배리"},{"name":"Scovillain","types":["grass","fire"],"ko":"스코빌런"},{"name":"Espathra","types":["psychic"],"ko":"클레스퍼트"},{"name":"Tinkaton","types":["fairy","steel"],"ko":"두드리짱"},{"name":"Palafin","types":["water"],"ko":"돌핀맨"},{"name":"Orthworm","types":["steel"],"ko":"꿈트렁"},{"name":"Glimmora","types":["rock","poison"],"ko":"킬라플로르"},{"name":"Houndstone","types":["ghost"],"ko":"묘두기"},{"name":"Annihilape","types":["fighting","ghost"],"ko":"저승갓숭"},{"name":"Farigiraf","types":["normal","psychic"],"ko":"키키링"},{"name":"Kingambit","types":["dark","steel"],"ko":"대도각참"},{"name":"Gholdengo","types":["steel","ghost"],"ko":"타부자고"},{"name":"Sinistcha","types":["grass","ghost"],"ko":"그우린차"},{"name":"Archaludon","types":["steel","dragon"],"ko":"브리두라스"},{"name":"Hydrapple","types":["grass","dragon"],"ko":"과미드라"}];
+
+function rosterId(name){
+ return name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+}
+const TYPE_DEFAULT_MOVES={
+ normal:["protect","uTurn","swordsDance","bodyPress"],
+ fire:["flamethrower","fireBlast","willOWisp","sunnyDay"],
+ water:["surf","hydroPump","iceBeam","rainDance"],
+ electric:["thunderbolt","voltSwitch","thunderWave","protect"],
+ grass:["energyBall","gigaDrain","protect","sunnyDay"],
+ ice:["iceBeam","icicleCrash","protect","recover"],
+ fighting:["closeCombat","auraSphere","rockSlide","protect"],
+ poison:["sludgeBomb","protect","toxic","venoshock"],
+ ground:["earthquake","earthPower","rockSlide","sandstorm"],
+ flying:["airSlash","braveBird","roost","tailwind"],
+ psychic:["psychic","calmMind","recover","protect"],
+ bug:["bugBuzz","xScissor","uTurn","protect"],
+ rock:["stoneEdge","rockSlide","sandstorm","protect"],
+ ghost:["shadowBall","willOWisp","protect","nastyPlot"],
+ dragon:["dragonClaw","dracoMeteor","dragonDance","protect"],
+ dark:["darkPulse","crunch","nastyPlot","protect"],
+ steel:["meteorMash","flashCannon","bulletPunch","protect"],
+ fairy:["moonblast","playRough","calmMind","protect"]
+};
+const FALLBACK_ABILITY={id:"standardAbility",name:"기본 특성",bonuses:{}};
+ABILITY.standardAbility=FALLBACK_ABILITY;
+
+function fallbackStats(types){
+ const defensive=types.includes("steel")||types.includes("rock")||types.includes("ground");
+ const fast=types.includes("electric")||types.includes("flying")||types.includes("dark");
+ const special=types.includes("psychic")||types.includes("fairy")||types.includes("ghost");
+ return defensive?[90,95,115,75,100,65]:fast?[75,95,70,100,75,115]:special?[80,70,75,115,105,90]:[85,105,85,95,85,85];
+}
+function fallbackMoves(types){
+ const list=[];
+ types.forEach(t=>(TYPE_DEFAULT_MOVES[t]||[]).forEach(m=>{if(MOVE[m]&&!list.includes(m))list.push(m)}));
+ ["protect","recover","uTurn","thunderWave","rockSlide","shadowBall"].forEach(m=>{if(MOVE[m]&&!list.includes(m))list.push(m)});
+ return list.slice(0,8);
+}
+FULL_MB_ROSTER.forEach(entry=>{
+ const id=rosterId(entry.name);
+ if(PKM[id]||POKEMON.some(p=>p.name.toLowerCase()===entry.name.toLowerCase()))return;
+ const stats=fallbackStats(entry.types);
+ const roles=[stats[1]>=stats[3]?"physical":"special",stats[2]>=105?"physicalTank":stats[4]>=105?"specialTank":"support"];
+ POKEMON.push({
+   id,name:entry.ko,englishName:entry.name,types:entry.types,stats,roles,
+   abilities:["standardAbility"],moves:fallbackMoves(entry.types),
+   megaForms:[],regulations:["M-B"],estimatedData:true
+ });
+});
+
+const 전체메가진화자료=[{"base":"Venusaur","name":"메가이상해꽃","stone":"venusaurite","types":["grass","poison"],"ability":"thickFat","stats":[80,100,123,122,120,80]},{"base":"Charizard","name":"메가리자몽X","stone":"charizarditeX","types":["fire","dragon"],"ability":"toughClaws","stats":[78,130,111,130,85,100]},{"base":"Charizard","name":"메가리자몽Y","stone":"charizarditeY","types":["fire","flying"],"ability":"drought","stats":[78,104,78,159,115,100]},{"base":"Blastoise","name":"메가거북왕","stone":"blastoisinite","types":["water"],"ability":"megaLauncher","stats":[79,103,120,135,115,78]},{"base":"Beedrill","name":"메가독침붕","stone":"beedrillite","types":["bug","poison"],"ability":"adaptability","stats":[65,150,40,15,80,145]},{"base":"Pidgeot","name":"메가피죤투","stone":"pidgeotite","types":["normal","flying"],"ability":"noGuard","stats":[83,80,80,135,80,121]},{"base":"Raichu","name":"메가라이츄X","stone":"raichuniteX","types":["electric"],"ability":"electricSurge","stats":null},{"base":"Raichu","name":"메가라이츄Y","stone":"raichuniteY","types":["electric"],"ability":"noGuard","stats":null},{"base":"Clefable","name":"메가픽시","stone":"clefablite","types":["fairy","flying"],"ability":"magicBounce","stats":[95,80,93,135,110,70]},{"base":"Alakazam","name":"메가후딘","stone":"alakazite","types":["psychic"],"ability":"trace","stats":[55,50,65,175,105,150]},{"base":"Victreebel","name":"메가우츠보트","stone":"victreebelite","types":["grass","poison"],"ability":"innardsOut","stats":[80,125,85,135,95,70]},{"base":"Slowbro","name":"메가야도란","stone":"slowbronite","types":["water","psychic"],"ability":"shellArmor","stats":[95,75,180,130,80,30]},{"base":"Gengar","name":"메가팬텀","stone":"gengarite","types":["ghost","poison"],"ability":"shadowTag","stats":[60,65,80,170,95,130]},{"base":"Kangaskhan","name":"메가캥카","stone":"kangaskhanite","types":["normal"],"ability":"parentalBond","stats":[105,125,100,60,100,100]},{"base":"Starmie","name":"메가아쿠스타","stone":"starmite","types":["water","psychic"],"ability":"hugePower","stats":[60,100,105,130,105,120]},{"base":"Pinsir","name":"메가쁘사이저","stone":"pinsirite","types":["bug","flying"],"ability":"aerilate","stats":[65,155,120,65,90,105]},{"base":"Gyarados","name":"메가갸라도스","stone":"gyaradosite","types":["water","dark"],"ability":"moldBreaker","stats":[95,155,109,70,130,81]},{"base":"Aerodactyl","name":"메가프테라","stone":"aerodactylite","types":["rock","flying"],"ability":"toughClaws","stats":[80,135,85,70,95,150]},{"base":"Dragonite","name":"메가망나뇽","stone":"dragoniteite","types":["dragon","flying"],"ability":"multiscale","stats":[91,124,115,145,125,100]},{"base":"Meganium","name":"메가메가니움","stone":"meganiumite","types":["grass","fairy"],"ability":"megaSol","stats":[80,92,115,143,115,80]},{"base":"Feraligatr","name":"메가장크로다일","stone":"feraligatrite","types":["water","dragon"],"ability":"dragonize","stats":[85,160,125,89,93,78]},{"base":"Ampharos","name":"메가전룡","stone":"ampharosite","types":["electric","dragon"],"ability":"moldBreaker","stats":[90,95,105,165,110,45]},{"base":"Steelix","name":"메가강철톤","stone":"steelixite","types":["steel","ground"],"ability":"sandForce","stats":[75,125,230,55,95,30]},{"base":"Scizor","name":"메가핫삼","stone":"scizorite","types":["bug","steel"],"ability":"technician","stats":[70,150,140,65,100,75]},{"base":"Heracross","name":"메가헤라크로스","stone":"heracronite","types":["bug","fighting"],"ability":"skillLink","stats":[80,185,115,40,105,75]},{"base":"Skarmory","name":"메가무장조","stone":"skarmorite","types":["steel","flying"],"ability":"stalwart","stats":[65,140,110,40,100,110]},{"base":"Houndoom","name":"메가헬가","stone":"houndoominite","types":["dark","fire"],"ability":"solarPower","stats":[75,90,90,140,90,115]},{"base":"Tyranitar","name":"메가마기라스","stone":"tyranitarite","types":["rock","dark"],"ability":"sandStream","stats":[100,164,150,95,120,71]},{"base":"Sceptile","name":"메가나무킹","stone":"sceptilite","types":["grass","dragon"],"ability":"lightningRod","stats":null},{"base":"Blaziken","name":"메가번치코","stone":"blazikenite","types":["fire","fighting"],"ability":"speedBoost","stats":[80,160,80,130,80,100]},{"base":"Swampert","name":"메가대짱이","stone":"swampertite","types":["water","ground"],"ability":"swiftSwim","stats":[100,150,110,95,110,70]},{"base":"Gardevoir","name":"메가가디안","stone":"gardevoirite","types":["psychic","fairy"],"ability":"pixilate","stats":[68,85,65,165,135,100]},{"base":"Sableye","name":"메가깜까미","stone":"sablenite","types":["dark","ghost"],"ability":"magicBounce","stats":[50,85,125,85,115,20]},{"base":"Mawile","name":"메가입치트","stone":"mawilite","types":["steel","fairy"],"ability":"hugePower","stats":null},{"base":"Aggron","name":"메가보스로라","stone":"aggronite","types":["steel"],"ability":"filter","stats":[70,140,230,60,80,50]},{"base":"Medicham","name":"메가요가램","stone":"medichamite","types":["fighting","psychic"],"ability":"purePower","stats":[60,100,85,80,85,100]},{"base":"Manectric","name":"메가썬더볼트","stone":"manectite","types":["electric"],"ability":"intimidate","stats":[70,75,80,135,80,135]},{"base":"Sharpedo","name":"메가샤크니아","stone":"sharpedonite","types":["water","dark"],"ability":"strongJaw","stats":[70,140,70,110,65,105]},{"base":"Camerupt","name":"메가폭타","stone":"cameruptite","types":["fire","ground"],"ability":"sheerForce","stats":[70,120,100,145,105,20]},{"base":"Altaria","name":"메가파비코리","stone":"altarianite","types":["dragon","fairy"],"ability":"pixilate","stats":[75,110,110,110,105,80]},{"base":"Banette","name":"메가다크펫","stone":"banettite","types":["ghost"],"ability":"prankster","stats":[64,165,75,93,83,75]},{"base":"Chimecho","name":"메가치렁","stone":"chimechoite","types":["psychic","steel"],"ability":"levitate","stats":[75,50,110,135,120,65]},{"base":"Absol","name":"메가앱솔","stone":"absolite","types":["dark"],"ability":"magicBounce","stats":[65,150,60,115,60,115]},{"base":"Glalie","name":"메가얼음귀신","stone":"glalitite","types":["ice"],"ability":"refrigerate","stats":[80,120,80,120,80,100]},{"base":"Metagross","name":"메가메타그로스","stone":"metagrossite","types":["steel","psychic"],"ability":"toughClaws","stats":[80,145,150,105,110,110]},{"base":"Staraptor","name":"메가찌르호크","stone":"staraptorite","types":["fighting","flying"],"ability":"reckless","stats":null},{"base":"Lopunny","name":"메가이어롭","stone":"lopunnite","types":["normal","fighting"],"ability":"scrappy","stats":[65,136,94,54,96,135]},{"base":"Garchomp","name":"메가한카리아스","stone":"garchompite","types":["dragon","ground"],"ability":"sandForce","stats":[108,170,115,120,95,92]},{"base":"Lucario","name":"메가루카리오","stone":"lucarionite","types":["fighting","steel"],"ability":"adaptability","stats":[70,145,88,140,70,112]},{"base":"Abomasnow","name":"메가눈설왕","stone":"abomasite","types":["grass","ice"],"ability":"snowWarning","stats":[90,132,105,132,105,30]},{"base":"Gallade","name":"메가엘레이드","stone":"galladite","types":["psychic","fighting"],"ability":"innerFocus","stats":[68,165,95,65,115,110]},{"base":"Froslass","name":"메가눈여아","stone":"froslassite","types":["ice","ghost"],"ability":"snowWarning","stats":[70,80,70,140,100,120]},{"base":"Emboar","name":"메가염무왕","stone":"emboarite","types":["fire","fighting"],"ability":"moldBreaker","stats":[110,148,75,110,110,75]},{"base":"Excadrill","name":"메가몰드류","stone":"excadrillite","types":["ground","steel"],"ability":"piercingDrill","stats":[110,165,100,65,65,103]},{"base":"Audino","name":"메가다부니","stone":"audinite","types":["normal","fairy"],"ability":"healer","stats":[103,60,126,80,126,50]},{"base":"Scolipede","name":"메가펜드라","stone":"scolipedite","types":["bug","poison"],"ability":"speedBoost","stats":null},{"base":"Scrafty","name":"메가곤율거니","stone":"scraftite","types":["dark","fighting"],"ability":"moxie","stats":null},{"base":"Eelektross","name":"메가저리더프","stone":"eelektrossite","types":["electric"],"ability":"eelevate","stats":null},{"base":"Chandelure","name":"메가샹델라","stone":"chandelurite","types":["ghost","fire"],"ability":"infiltrator","stats":[60,75,110,175,110,90]},{"base":"Golurk","name":"메가골루그","stone":"golurkite","types":["ground","ghost"],"ability":"unseenFist","stats":[89,159,105,70,105,55]},{"base":"Chesnaught","name":"메가브리가론","stone":"chesnaughtite","types":["grass","fighting"],"ability":"bulletproof","stats":[88,137,172,74,115,44]},{"base":"Delphox","name":"메가마폭시","stone":"delphoxite","types":["fire","psychic"],"ability":"levitate","stats":[75,69,72,159,125,134]},{"base":"Greninja","name":"메가개굴닌자","stone":"greninjite","types":["water","dark"],"ability":"protean","stats":[72,125,77,133,81,142]},{"base":"Pyroar","name":"메가화염레오","stone":"pyroarite","types":["fire","normal"],"ability":"fireMane","stats":null},{"base":"Floette-Eternal","name":"메가플라엣테","stone":"floettite","types":["fairy"],"ability":"fairyAura","stats":[74,85,87,155,148,102]},{"base":"Meowstic-Male","name":"메가냐오닉스(수컷)","stone":"meowsticite","types":["psychic"],"ability":"trace","stats":[74,48,76,143,101,124]},{"base":"Meowstic-Female","name":"메가냐오닉스(암컷)","stone":"meowsticite","types":["psychic"],"ability":"trace","stats":[74,48,76,83,81,104]},{"base":"Malamar","name":"메가칼라마네로","stone":"malamarite","types":["dark","psychic"],"ability":"contrary","stats":null},{"base":"Barbaracle","name":"메가거북손데스","stone":"barbaraclenite","types":["rock","fighting"],"ability":"toughClaws","stats":null},{"base":"Dragalge","name":"메가드래캄","stone":"dragalgite","types":["poison","dragon"],"ability":"adaptability","stats":null},{"base":"Hawlucha","name":"메가루차불","stone":"hawluchanite","types":["fighting","flying"],"ability":"noGuard","stats":[78,137,100,74,93,118]},{"base":"Crabominable","name":"메가모단단게","stone":"crabominite","types":["fighting","ice"],"ability":"ironFist","stats":[97,157,122,62,107,33]},{"base":"Drampa","name":"메가할비롱","stone":"drampite","types":["normal","dragon"],"ability":"berserk","stats":[78,85,110,160,116,36]},{"base":"Falinks","name":"메가대여르","stone":"falinksite","types":["fighting"],"ability":"battleArmor","stats":null},{"base":"Scovillain","name":"메가스코빌런","stone":"scovillainite","types":["grass","fire"],"ability":"spicySpray","stats":[65,138,85,138,85,75]},{"base":"Glimmora","name":"메가킬라플로르","stone":"glimmoranite","types":["rock","poison"],"ability":"adaptability","stats":[83,90,105,150,96,101]}];
+const 추가메가능력자료={"thickFat":{"id":"thickFat","name":"두꺼운지방","bonuses":{"defense":9}},"toughClaws":{"id":"toughClaws","name":"단단한발톱","bonuses":{"offense":11}},"drought":{"id":"drought","name":"가뭄","bonuses":{"weather":10,"offense":5}},"megaLauncher":{"id":"megaLauncher","name":"메가런처","bonuses":{"special":12}},"adaptability":{"id":"adaptability","name":"적응력","bonuses":{"offense":13}},"noGuard":{"id":"noGuard","name":"노가드","bonuses":{"accuracy":10}},"electricSurge":{"id":"electricSurge","name":"일렉트릭메이커","bonuses":{"offense":7,"support":5}},"magicBounce":{"id":"magicBounce","name":"매직미러","bonuses":{"defense":7,"support":8}},"trace":{"id":"trace","name":"트레이스","bonuses":{"support":6}},"innardsOut":{"id":"innardsOut","name":"내용물분출","bonuses":{"offense":5}},"shellArmor":{"id":"shellArmor","name":"조가비갑옷","bonuses":{"defense":6}},"shadowTag":{"id":"shadowTag","name":"그림자밟기","bonuses":{"support":12}},"parentalBond":{"id":"parentalBond","name":"부자유친","bonuses":{"offense":12}},"hugePower":{"id":"hugePower","name":"천하장사","bonuses":{"physical":18}},"aerilate":{"id":"aerilate","name":"스카이스킨","bonuses":{"offense":9}},"moldBreaker":{"id":"moldBreaker","name":"틀깨기","bonuses":{"offense":6}},"multiscale":{"id":"multiscale","name":"멀티스케일","bonuses":{"defense":12}},"megaSol":{"id":"megaSol","name":"메가솔","bonuses":{"weather":8,"offense":5}},"dragonize":{"id":"dragonize","name":"드래곤스킨","bonuses":{"offense":9}},"sandForce":{"id":"sandForce","name":"모래의힘","bonuses":{"weather":7,"offense":7}},"technician":{"id":"technician","name":"테크니션","bonuses":{"offense":8}},"skillLink":{"id":"skillLink","name":"스킬링크","bonuses":{"offense":8}},"stalwart":{"id":"stalwart","name":"굳건한신념","bonuses":{"support":4}},"solarPower":{"id":"solarPower","name":"선파워","bonuses":{"weather":5,"special":12}},"sandStream":{"id":"sandStream","name":"모래날림","bonuses":{"weather":10,"defense":5}},"pixilate":{"id":"pixilate","name":"페어리스킨","bonuses":{"offense":8}},"lightningRod":{"id":"lightningRod","name":"피뢰침","bonuses":{"defense":8,"special":4}},"speedBoost":{"id":"speedBoost","name":"가속","bonuses":{"speed":12}},"swiftSwim":{"id":"swiftSwim","name":"쓱쓱","bonuses":{"speed":12,"weather":5}},"filter":{"id":"filter","name":"필터","bonuses":{"defense":9}},"purePower":{"id":"purePower","name":"순수한힘","bonuses":{"physical":18}},"intimidate":{"id":"intimidate","name":"위협","bonuses":{"defense":9}},"strongJaw":{"id":"strongJaw","name":"옹골찬턱","bonuses":{"offense":9}},"sheerForce":{"id":"sheerForce","name":"우격다짐","bonuses":{"offense":10}},"prankster":{"id":"prankster","name":"짓궂은마음","bonuses":{"support":10,"speed":4}},"levitate":{"id":"levitate","name":"부유","bonuses":{"defense":10}},"refrigerate":{"id":"refrigerate","name":"프리즈스킨","bonuses":{"offense":9}},"reckless":{"id":"reckless","name":"이판사판","bonuses":{"offense":8}},"scrappy":{"id":"scrappy","name":"배짱","bonuses":{"offense":6}},"snowWarning":{"id":"snowWarning","name":"눈퍼뜨리기","bonuses":{"weather":10,"defense":4}},"innerFocus":{"id":"innerFocus","name":"정신력","bonuses":{"support":3}},"piercingDrill":{"id":"piercingDrill","name":"관통드릴","bonuses":{"offense":10}},"healer":{"id":"healer","name":"치유의마음","bonuses":{"support":6}},"moxie":{"id":"moxie","name":"자기과신","bonuses":{"offense":7}},"eelevate":{"id":"eelevate","name":"일렉트로플로트","bonuses":{"defense":8,"offense":5}},"infiltrator":{"id":"infiltrator","name":"틈새포착","bonuses":{"offense":6}},"unseenFist":{"id":"unseenFist","name":"보이지않는주먹","bonuses":{"offense":9}},"bulletproof":{"id":"bulletproof","name":"방탄","bonuses":{"defense":7}},"protean":{"id":"protean","name":"변환자재","bonuses":{"offense":9}},"fireMane":{"id":"fireMane","name":"화염갈기","bonuses":{"offense":9}},"fairyAura":{"id":"fairyAura","name":"페어리오라","bonuses":{"offense":9}},"contrary":{"id":"contrary","name":"심술꾸러기","bonuses":{"offense":7}},"battleArmor":{"id":"battleArmor","name":"전투무장","bonuses":{"defense":6}},"spicySpray":{"id":"spicySpray","name":"스파이시스프레이","bonuses":{"defense":6,"support":5}},"ironFist":{"id":"ironFist","name":"철주먹","bonuses":{"offense":7}},"berserk":{"id":"berserk","name":"발끈","bonuses":{"special":7}}};
+
+Object.entries(추가메가능력자료).forEach(([식별자,자료])=>{
+  ABILITY[식별자]=자료;
+});
+
+function 메가종족값보완(기본종족값){
+  const [체력,공격,방어,특수공격,특수방어,스피드]=기본종족값;
+  return [
+    체력,
+    공격+20,
+    방어+20,
+    특수공격+20,
+    특수방어+20,
+    스피드+20
+  ];
+}
+
+function 메가자료대상찾기(영문이름){
+  const 식별자=rosterId(영문이름);
+  return POKEMON.find(포켓몬=>
+    포켓몬.id===식별자 ||
+    포켓몬.englishName===영문이름
+  );
+}
+
+전체메가진화자료.forEach(메가자료=>{
+  const 기본포켓몬=메가자료대상찾기(메가자료.base);
+  if(!기본포켓몬)return;
+
+  const 기존형태=기본포켓몬.megaForms.find(
+    형태=>형태.stone===메가자료.stone
+  );
+
+  const 완성자료={
+    id:"mega-"+rosterId(메가자료.name),
+    name:메가자료.name,
+    stone:메가자료.stone,
+    types:메가자료.types,
+    stats:메가자료.stats||메가종족값보완(기본포켓몬.stats),
+    ability:메가자료.ability,
+    estimatedStats:!메가자료.stats
+  };
+
+  if(기존형태){
+    Object.assign(기존형태,완성자료);
+  }else{
+    기본포켓몬.megaForms.push(완성자료);
+  }
+
+  if(!ITEM[메가자료.stone]){
+    const 돌={id:메가자료.stone,name:메가자료.name.replace(/^메가/,"")+"나이트",category:"mega",bonuses:{}};
+    ITEMS.push(돌);
+    ITEM[메가자료.stone]=돌;
+  }
+});
+
+POKEMON.sort((a,b)=>a.name.localeCompare(b.name,"en"));
+Object.keys(PKM).forEach(k=>delete PKM[k]);
+
+POKEMON.forEach(p=>PKM[p.id]=p);
+
+[
+ ["adaptability","적응력",{offense:13}],
+ ["moldBreaker","틀깨기",{offense:6}],
+ ["swiftSwim","쓱쓱",{speed:12,weather:5}]
+].forEach(([식별자,이름,보너스])=>{
+ if(!ABILITY[식별자]){
+   ABILITY[식별자]={id:식별자,name:이름,bonuses:보너스};
+ }
+});
+
+function 보완대쓰여너자료(){
+ const 수컷=PKM["basculegion-male"];
+ const 암컷=PKM["basculegion-female"];
+
+ if(수컷){
+   수컷.stats=[120,112,65,80,75,78];
+   수컷.roles=["physical","speed"];
+   수컷.abilities=["adaptability","moldBreaker","swiftSwim"];
+   수컷.estimatedData=false;
+ }
+ if(암컷){
+   암컷.stats=[120,92,65,100,75,78];
+   암컷.roles=["special","speed"];
+   암컷.abilities=["adaptability","moldBreaker","swiftSwim"];
+   암컷.estimatedData=false;
+ }
+}
+
+applySignatureLearnsets();
+보완대쓰여너자료();
+
+
+// 참조 기술 보완
+[["bodyPress","바디프레스","fighting","physical",80,100,[]],["ironDefense","철벽","steel","status",0,100,["defense","setup"]],["clearSmog","클리어스모그","poison","special",50,100,["status"]],["icePunch","냉동펀치","ice","physical",75,100,[]],["thunderPunch","번개펀치","electric","physical",75,100,[]],["stealthRock","스텔스록","rock","status",0,100,["status"]]].forEach(([id,name,type,category,power,accuracy,tags])=>MOVE[id]={id,name,type,category,power,accuracy,tags});
+
+/* ===== 유틸 ===== */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function eff(atk,defs){return defs.reduce((v,d)=>v*(CHART[atk]?.[d]??1),1)}
+function combos(a,k){const r=[];function f(i,c){if(c.length===k){r.push([...c]);return}for(let j=i;j<a.length;j++){c.push(a[j]);f(j+1,c);c.pop()}}f(0,[]);return r}
+function bonus(src,key){return src?.bonuses?.[key]??0}
+function selectedAttackMoves(p){return p.selectedMoves.filter(m=>m&&m.category!=="status")}
+function speedValue(p){const mult={none:1,fast:1.1,max:1.18}[p.speedPreset]??1;let v=p.stats[5]*mult+bonus(p.selectedItem,"speed")+bonus(p.selectedAbility,"speed");return v}
+function itemOptions(p){const legal=ITEMS.filter(i=>i.category!=="mega"||p.megaForms.some(m=>m.stone===i.id));return legal.map(i=>{
+ const mega=p.megaForms.find(m=>m.stone===i.id);
+ return `<option value="${i.id}">${i.name}${mega?` → ${mega.name}`:""}</option>`;
+}).join("")}
+function moveOptions(p){
+ return globalMoveOptions();
+}
+
+function formFor(p,megaUserId){
+ if(p.id!==megaUserId)return p;
+ const megaForm=p.megaForms.find(form=>form.stone===p.selectedItem.id);
+ if(!megaForm)return p;
+
+ return{
+   ...p,
+   name:megaForm.name,
+   types:megaForm.types,
+   stats:megaForm.stats,
+   selectedAbility:ABILITY[megaForm.ability]||p.selectedAbility,
+   isMega:true,
+   estimatedStats:Boolean(megaForm.estimatedStats)
+ };
+}
+
+function bestMove(attacker,defender){
+ const moves=selectedAttackMoves(attacker);
+ if(!moves.length)return{move:null,mult:0,index:0};
+
+ return moves.map(move=>{
+   const attackStat=move.category==="physical"
+     ?attacker.stats[1]
+     :attacker.stats[3];
+
+   const stab=attacker.types.includes(move.type)?1.5:1;
+   const accuracy=(move.accuracy??100)/100;
+   const itemMultiplier=1+(
+     bonus(attacker.selectedItem,"offense")+
+     bonus(attacker.selectedItem,move.category)+
+     bonus(attacker.selectedItem,move.type)
+   )/100;
+   const abilityMultiplier=1+(
+     bonus(attacker.selectedAbility,"offense")+
+     bonus(attacker.selectedAbility,move.category)
+   )/100;
+   const multiplier=eff(move.type,defender.types);
+
+   return{
+     move,
+     mult:multiplier,
+     index:move.power*attackStat*stab*accuracy*
+       multiplier*itemMultiplier*abilityMultiplier
+   };
+ }).sort((first,second)=>second.index-first.index)[0];
+}
+
+function incomingMult(defender,attacker){
+ const moves=selectedAttackMoves(attacker);
+
+ if(moves.length){
+   return Math.max(...moves.map(move=>
+     eff(move.type,defender.types)
+   ));
+ }
+
+ /*
+  * 상대 기술은 공개되지 않으므로 상대의 기본 타입 공격만 가정합니다.
+  * 구체적인 기술·도구·특성은 추정하지 않습니다.
+  */
+ return Math.max(...attacker.types.map(type=>
+   eff(type,defender.types)
+ ));
+}
+
+function matchup(attacker,defender){
+ const best=bestMove(attacker,defender);
+ const incoming=incomingMult(attacker,defender);
+
+ const attackScore=
+   best.mult>=4?100:
+   best.mult>=2?86:
+   best.mult===1?58:
+   best.mult>=0.5?30:
+   best.mult>0?15:0;
+
+ const defenseScore=
+   incoming===0?100:
+   incoming<=0.5?80:
+   incoming===1?55:
+   incoming<=2?28:8;
+
+ const speedScore=speedValue(attacker)>speedValue(defender)?68:42;
+ const movePower=best.move
+   ?Math.min(100,best.move.power*((best.move.accuracy??100)/100))
+   :0;
+
+ const score=
+   attackScore*0.42+
+   defenseScore*0.25+
+   speedScore*0.18+
+   movePower*0.15;
+
+ return{
+   score:Math.max(0,Math.min(100,score)),
+   best,
+   inc:incoming,
+   speed:speedValue(attacker)>speedValue(defender)
+ };
+}
+
+function approxDamageTier(attacker,defender){
+ const best=bestMove(attacker,defender);
+ if(!best.move)return"유효타 없음";
+
+ const defenseStat=best.move.category==="physical"
+   ?defender.stats[2]
+   :defender.stats[4];
+
+ const attackStat=best.move.category==="physical"
+   ?attacker.stats[1]
+   :attacker.stats[3];
+
+ const ratio=(
+   best.move.power*
+   attackStat*
+   Math.max(0.25,best.mult)
+ )/(Math.max(1,defenseStat)*100);
+
+ if(ratio>1.55)return"매우 높은 피해";
+ if(ratio>1.05)return"높은 피해";
+ if(ratio>0.68)return"중간 피해";
+ if(ratio>0.35)return"낮은 피해";
+ return"거의 피해 없음";
+}
+
+function supportScore(team){
+ const tags={
+   defense:0,speed:0,weather:0,recovery:0,
+   setup:0,pivot:0,priority:0,status:0,
+   hazard:0,support:0,lateGame:0
+ };
+
+ team.forEach(pokemon=>{
+   pokemon.selectedMoves.forEach(move=>{
+     (move?.tags??[]).forEach(tag=>{
+       tags[tag]=(tags[tag]??0)+1;
+     });
+   });
+ });
+
+ return{
+   tags,
+   score:Math.min(
+     100,
+     tags.defense*8+
+     tags.speed*9+
+     tags.weather*6+
+     tags.recovery*8+
+     tags.setup*7+
+     tags.pivot*8+
+     tags.priority*7+
+     tags.status*6+
+     tags.hazard*7+
+     tags.support*5+
+     tags.lateGame*8
+   )
+ };
+}
+
+function sharedWeak(team){
+ return Object.keys(TYPE_KO)
+   .map(type=>({
+     type,
+     count:team.filter(pokemon=>
+       eff(type,pokemon.types)>=2
+     ).length
+   }))
+   .filter(item=>item.count>=2);
+}
+
+function megaCandidates(team){
+ return team.filter(pokemon=>
+   pokemon.selectedItem?.category==="mega"&&
+   pokemon.megaForms.some(form=>
+     form.stone===pokemon.selectedItem.id
+   )
+ );
+}
+
+function pairTeamScore(myTeam,enemyTeam){
+ const scores=enemyTeam.map(enemy=>
+   Math.max(...myTeam.map(myPokemon=>
+     matchup(myPokemon,enemy).score
+   ))
+ );
+
+ return scores.reduce((sum,score)=>sum+score,0)/
+   scores.length;
+}
+
+function dependency(myTeam,enemyTeam){
+ const counts=Object.fromEntries(
+   myTeam.map(pokemon=>[pokemon.id,0])
+ );
+
+ enemyTeam.forEach(enemy=>{
+   const best=myTeam
+     .map(pokemon=>({
+       pokemon,
+       score:matchup(pokemon,enemy).score
+     }))
+     .sort((first,second)=>second.score-first.score)[0];
+
+   counts[best.pokemon.id]+=1;
+ });
+
+ return Object.entries(counts)
+   .sort((first,second)=>second[1]-first[1])[0];
+}
+
+function megaGain(team,enemyTeam,candidateId){
+ const baseScore=pairTeamScore(team,enemyTeam);
+ const transformedTeam=team.map(pokemon=>
+   formFor(pokemon,candidateId)
+ );
+ return pairTeamScore(transformedTeam,enemyTeam)-baseScore;
+}
+
+function evaluatePlan(baseTeam,enemyFull,style){
+ const plans=[
+   null,
+   ...megaCandidates(baseTeam).map(pokemon=>pokemon.id)
+ ];
+
+ const enemySelections=combos(enemyFull,3);
+ let bestPlan=null;
+
+ plans.forEach(megaId=>{
+   const team=baseTeam.map(pokemon=>
+     formFor(pokemon,megaId)
+   );
+
+   const selectionScores=enemySelections.map(enemySelection=>
+     pairTeamScore(team,enemySelection)
+   );
+
+   const average=
+     selectionScores.reduce((sum,score)=>sum+score,0)/
+     selectionScores.length;
+
+   const worst=Math.min(...selectionScores);
+   const bestCase=Math.max(...selectionScores);
+   const support=supportScore(team);
+   const weaknesses=sharedWeak(team);
+   const roleCount=new Set(
+     team.flatMap(pokemon=>pokemon.roles)
+   ).size;
+   const dependence=dependency(team,enemyFull);
+   const megaValue=megaId
+     ?Math.max(0,megaGain(baseTeam,enemyFull,megaId))
+     :0;
+
+   const attackCoverage=
+     enemyFull.filter(enemy=>
+       team.some(pokemon=>
+         bestMove(pokemon,enemy).mult>=2
+       )
+     ).length/6*100;
+
+   const defense=
+     enemyFull.map(enemy=>
+       Math.max(...team.map(pokemon=>{
+         const incoming=incomingMult(pokemon,enemy);
+         return incoming===0?100:
+           incoming<=0.5?80:
+           incoming===1?55:
+           incoming<=2?28:8;
+       }))
+     ).reduce((sum,score)=>sum+score,0)/6;
+
+   let finalScore;
+
+   if(style==="attack"){
+     finalScore=
+       average*0.55+
+       attackCoverage*0.22+
+       megaValue*0.13+
+       support.score*0.10-
+       weaknesses.length*2;
+   }else if(style==="safe"){
+     finalScore=
+       average*0.30+
+       worst*0.38+
+       defense*0.18+
+       support.score*0.09-
+       weaknesses.length*2.5+
+       roleCount;
+   }else if(style==="mega"){
+     finalScore=
+       average*0.42+
+       megaValue*0.28+
+       attackCoverage*0.12+
+       support.score*0.08+
+       worst*0.10-
+       weaknesses.length*2;
+   }else{
+     const riskSetting=$("#riskWeight").value;
+     const [averageWeight,worstWeight]=
+       riskSetting==="safe"
+         ?[0.5,0.5]
+         :riskSetting==="aggressive"
+           ?[0.9,0.1]
+           :[0.7,0.3];
+
+     finalScore=
+       (average*averageWeight+worst*worstWeight)*0.62+
+       attackCoverage*0.12+
+       defense*0.10+
+       support.score*0.08+
+       Math.min(100,megaValue*5)*0.08-
+       weaknesses.length*2;
+   }
+
+   const plan={
+     team,
+     baseTeam,
+     megaId,
+     avg:average,
+     worst,
+     bestCase,
+     final:Math.max(0,Math.min(100,finalScore)),
+     supp:support,
+     weak:weaknesses,
+     dep:dependence,
+     megaValue,
+     attackCoverage,
+     defense,
+     enemySelections,
+     selectionScores
+   };
+
+   if(!bestPlan||plan.final>bestPlan.final){
+     bestPlan=plan;
+   }
+ });
+
+ return bestPlan;
+}
+function evaluateAll(my,enemy,style){return combos(my,3).map(t=>evaluatePlan(t,enemy,style)).sort((a,b)=>b.final-a.final)}
+function leadScore(p,enemy){const scores=enemy.map(e=>matchup(p,e).score);const losing=scores.filter(s=>s<40).length;const pivot=p.selectedMoves.some(m=>m?.tags?.includes("pivot"))?10:0;const status=p.selectedMoves.some(m=>m?.category==="status")?6:0;return scores.reduce((a,b)=>a+b,0)/6-losing*6+pivot+status}
+function label(score){return score>=72?["유리","fav"]:score>=48?["대등","even"]:["불리","bad"]}
+
+/* ===== 화면 ===== */
+function createSlot(kind,i){
+ const d=document.createElement("div");d.className="slot";d.innerHTML=`
+ <div class="slot-title"><strong>${i+1}번 포켓몬</strong><span class="legal">M-B 사용 가능</span></div>
+ <input class="pkm-search" type="search" placeholder="이름 검색" aria-label="포켓몬 이름 검색"><select class="pkm" data-kind="${kind}" data-i="${i}"><option value="">선택하세요</option>${POKEMON.map(p=>`<option value="${p.id}">${p.name} (${p.types.map(t=>TYPE_KO[t]).join("/")})</option>`).join("")}</select>
+ <div class="preview"></div><div class="build" hidden></div>`;
+ const search=d.querySelector(".pkm-search"),select=d.querySelector(".pkm");
+ search.addEventListener("input",()=>{
+   const q=search.value.trim().toLowerCase();
+   [...select.options].forEach((o,i)=>{if(i)o.hidden=q&&!o.textContent.toLowerCase().includes(q)});
+ });
+ select.addEventListener("change",()=>{
+   search.value=select.options[select.selectedIndex]?.textContent||"";
+   if(kind==="enemy") renderEnemyPreview(d);
+   else renderBuild(d);
+ });
+ return d
+}
+
+function renderEnemyPreview(slot){
+ const id=slot.querySelector(".pkm").value;
+ const pv=slot.querySelector(".preview"),b=slot.querySelector(".build");
+ if(!id){pv.innerHTML="";b.hidden=true;b.innerHTML="";return}
+ const p=PKM[id];
+ pv.innerHTML=`<span class="name">${p.name}</span>
+ <div class="badges">${p.types.map(t=>`<span class="badge">${TYPE_KO[t]}</span>`).join("")}
+ ${p.megaForms.length?`<span class="badge mega">메가진화 가능</span>`:""}
+ ${p.estimatedData?`<span class="badge">간이 데이터</span>`:""}</div>
+ <span class="stat">체력 ${p.stats[0]} · 공격 ${p.stats[1]} · 방어 ${p.stats[2]} · 특수공격 ${p.stats[3]} · 특수방어 ${p.stats[4]} · 스피드 ${p.stats[5]}</span>`;
+ b.hidden=true;
+ b.innerHTML="";
+}
+
+function renderBuild(slot,preset=null){
+ const id=slot.querySelector(".pkm").value,pv=slot.querySelector(".preview"),b=slot.querySelector(".build");
+ if(!id){pv.innerHTML="";b.hidden=true;b.innerHTML="";return}
+ const p=PKM[id],moves=preset?.moves??p.moves.slice(0,4),ability=preset?.ability??p.abilities[0],item=preset?.item??"none",speed=preset?.speed??"none";
+ pv.innerHTML=`<span class="name">${p.name}</span><div class="badges">${p.types.map(t=>`<span class="badge">${TYPE_KO[t]}</span>`).join("")}${p.megaForms.length?`<span class="badge mega">메가진화 가능 · ${p.megaForms.length}종</span>`:""}${p.estimatedData?`<span class="badge">간이 데이터</span>`:""}</div><span class="stat">체력 ${p.stats[0]} · 공 ${p.stats[1]} · 방 ${p.stats[2]} · 특공 ${p.stats[3]} · 특방 ${p.stats[4]} · 스피드 ${p.stats[5]}</span><div class="badges">${p.roles.map(r=>`<span class="badge role">${ROLE_KO[r]}</span>`).join("")}</div>`;
+ b.hidden=false;b.innerHTML=`
+ <div class="build-row"><label>특성</label><select class="ability">${p.abilities.map(a=>`<option value="${a}" ${a===ability?"selected":""}>${ABILITY[a].name}</option>`).join("")}</select></div>
+ <div class="build-row"><label>도구</label><select class="item">${itemOptions(p)}</select></div>
+ <div class="build-row"><label>스피드</label><select class="speed"><option value="none">무보정</option><option value="fast">준속</option><option value="max">최속</option></select></div>
+ <div class="move-search-row"><label>기술 검색</label><input class="move-search" type="search" placeholder="기술 이름 검색"></div>
+ <div class="build-row"><label>기술</label><div class="moves">${[0,1,2,3].map((_,j)=>`<select class="move"><option value="">기술 선택</option>${moveOptions(p)}</select>`).join("")}</div></div>
+ <div class="summary"></div>`;
+ b.querySelector(".item").value=item;b.querySelector(".speed").value=speed;b.querySelectorAll(".move").forEach((s,j)=>s.value=moves[j]??"");
+ b.querySelectorAll("select").forEach(s=>s.addEventListener("change",()=>updateSummary(slot)));
+ const moveSearch=b.querySelector(".move-search");
+ moveSearch.addEventListener("input",()=>{
+   const query=moveSearch.value.trim().toLowerCase();
+   b.querySelectorAll(".move").forEach(select=>{
+     [...select.options].forEach((option,index)=>{
+       if(index===0)return;
+       option.hidden=query&&!option.textContent.toLowerCase().includes(query);
+     });
+   });
+ });
+ updateSummary(slot)
+}
+function updateSummary(slot){const ms=[...slot.querySelectorAll(".move")].map(s=>MOVE[s.value]).filter(Boolean);const atk=[...new Set(ms.filter(m=>m.category!=="status").map(m=>TYPE_KO[m.type]))];const tags=[...new Set(ms.flatMap(m=>m.tags??[]).map(t=>TAG_KO[t]))];slot.querySelector(".summary").textContent=`공격 범위: ${atk.join(", ")||"없음"} · 보조: ${tags.join(", ")||"없음"}`}
+function readTeam(kind){
+ return $$(`.pkm[data-kind="${kind}"]`).map(sel=>{
+   if(!sel.value)return null;
+   const slot=sel.closest(".slot"),p=PKM[sel.value];
+
+   if(kind==="enemy"){
+     return{
+       ...p,
+       selectedMoves:[],
+       selectedAbility:ABILITY[p.abilities?.[0]]||ABILITY.standardAbility,
+       selectedItem:ITEM.none,
+       speedPreset:"none",
+       hiddenBuild:true
+     };
+   }
+
+   return{
+     ...p,
+     selectedMoves:[...slot.querySelectorAll(".move")].map(s=>MOVE[s.value]).filter(Boolean),
+     selectedAbility:ABILITY[slot.querySelector(".ability").value],
+     selectedItem:ITEM[slot.querySelector(".item").value],
+     speedPreset:slot.querySelector(".speed").value
+   };
+ }).filter(Boolean)
+}
+function validate(team,name,isEnemy=false){
+ if(team.length!==6)return`${name} 6마리를 모두 선택해 주세요.`;
+ if(new Set(team.map(p=>p.id)).size!==6)return`${name}에 같은 포켓몬을 중복할 수 없습니다.`;
+
+ if(isEnemy)return null;
+
+ const items=team.map(p=>p.selectedItem.id).filter(x=>x!=="none");
+ if(new Set(items).size!==items.length)return`${name}에서 같은 도구를 중복할 수 없습니다.`;
+
+ for(const p of team){
+   if(p.selectedMoves.length!==4)return`${name}의 ${p.name} 기술 4개를 모두 선택해 주세요.`;
+   if(new Set(p.selectedMoves.map(m=>m.id)).size!==4)return`${p.name}의 기술이 중복되었습니다.`;
+ }
+ return null
+}
+let allResults={},currentStyle="overall";
+function analyze(){
+ try{
+   const my=readTeam("my");
+   const enemy=readTeam("enemy");
+   const error=
+     validate(my,"내 파티",false)||
+     validate(enemy,"상대 파티",true);
+
+   if(error){
+     $("#error").textContent=error;
+     $("#error").classList.add("show");
+     return;
+   }
+
+   $("#error").classList.remove("show");
+
+   allResults={
+     overall:evaluateAll(my,enemy,"overall"),
+     safe:evaluateAll(my,enemy,"safe"),
+     attack:evaluateAll(my,enemy,"attack"),
+     mega:evaluateAll(my,enemy,"mega")
+   };
+
+   currentStyle="overall";
+   renderTabs();
+   renderCurrent(enemy);
+   $("#results").classList.add("show");
+   $("#results").scrollIntoView({
+     behavior:"smooth",
+     block:"start"
+   });
+ }catch(분석오류){
+   console.error("분석 오류",분석오류);
+   $("#error").textContent=
+     "분석 중 오류가 발생했습니다: "+분석오류.message;
+   $("#error").classList.add("show");
+ }
+}
+function renderTabs(){const names={overall:"종합 추천",safe:"안정형",attack:"공격형",mega:"메가 중심"};$("#tabs").innerHTML=Object.entries(names).map(([k,v])=>`<button class="tab ${k===currentStyle?"active":""}" data-style="${k}">${v}</button>`).join("");$$(".tab").forEach(b=>b.onclick=()=>{currentStyle=b.dataset.style;renderTabs();renderCurrent(readTeam("enemy"))})}
+function renderCurrent(enemy){
+ const r=allResults[currentStyle][0];$("#totalScore").textContent=r.final.toFixed(1);
+ $("#confidenceText").textContent="추천 신뢰도: 중간 · 상대 기술·특성·도구를 가정하지 않고 포켓몬 6마리와 기본 타입·종족값을 중심으로 평가";
+ $("#pickGrid").innerHTML=r.team.map((p,i)=>`<article class="pick"><small>${i+1}번째 선출${p.isMega?" · 권장 메가":""}${p.estimatedStats?" · 종족값 간이 보완":""}</small><h3>${p.name}</h3><div class="badges">${p.types.map(t=>`<span class="badge">${TYPE_KO[t]}</span>`).join("")}</div><div class="loadout"><div><b>특성</b> ${p.selectedAbility.name}</div><div><b>도구</b> ${p.selectedItem.name}</div><div><b>기술</b> ${p.selectedMoves.map(m=>m.name).join(", ")}</div></div></article>`).join("");
+ $("#kpis").innerHTML=[["평균 대응",r.avg],["최악 대응",r.worst],["최고 대응",r.bestCase],["공격 범위",r.attackCoverage],["방어 안정성",r.defense]].map(([k,v])=>`<div class="kpi"><span>${k}</span><strong>${v.toFixed(1)}</strong></div>`).join("");
+ const depP=r.team.find(p=>p.id===r.dep[0]);const reasons=[`상대 가능한 3마리 선출 20개에 대한 평균 대응 점수는 ${r.avg.toFixed(1)}점입니다.`,`선택 기술로 상대 6마리 중 ${Math.round(r.attackCoverage/100*6)}마리의 약점을 공략할 수 있습니다.`,r.supp.score>35?`회복·속도 조절·교체 운영 등 보조 수단이 비교적 충분합니다.`:`공격 비중이 높아 짧은 승부에 적합합니다.`,r.weak.length===0?"두 마리 이상이 함께 약한 공격 타입이 없습니다.":`공통 약점 ${r.weak.length}개를 감수하되 대면 성능을 확보한 조합입니다.`];
+ $("#reasons").innerHTML=reasons.map(x=>`<li>${x}</li>`).join("");
+ if(r.megaId){const mp=r.team.find(p=>p.id===r.megaId);$("#megaPlan").innerHTML=`<b>${mp.name}</b> 메가진화 권장<br><span class="stat">일반형 대비 기대 이득 ${r.megaValue.toFixed(1)}점. 메가스톤의 일반 도구 포기 비용까지 포함한 비교입니다.</span>`}else{$("#megaPlan").innerHTML=`메가진화 보류 플랜이 가장 높게 평가됐습니다.<span class="stat">현재 선출의 일반 도구 가치가 메가 이득보다 큽니다.</span>`}
+ const lead=[...r.team].sort((a,b)=>leadScore(b,enemy)-leadScore(a,enemy))[0];$("#leadPlan").innerHTML=`<b>${lead.name}</b><br><span class="stat">상대 6마리 평균 선봉 점수 ${leadScore(lead,enemy).toFixed(1)}. 불리한 대면 수, 교체기, 상태 기술을 함께 평가했습니다.</span>`;
+ const risks=[];if(r.weak.length)risks.push(`공통 약점: ${r.weak.map(x=>TYPE_KO[x.type]).join(", ")}`);if(r.dep[1]>=4)risks.push(`${depP.name}이 상대 ${r.dep[1]}마리의 최적 대응을 담당해 의존도가 높습니다.`);if(r.worst<45)risks.push("특정 상대 선출에 대한 최악 점수가 낮아 선출 읽기 실패 시 위험합니다.");if(!r.megaId&&megaCandidates(r.baseTeam).length)risks.push("메가 후보를 선출했지만 메가진화하지 않는 예외 플랜입니다.");$("#risks").innerHTML=(risks.length?risks:["뚜렷한 구조적 위험이 적습니다."]).map(x=>`<li>${x}</li>`).join("");
+ renderMatrix(r.team,enemy);renderSwitches(r.team);renderRanking(allResults[currentStyle])
+}
+function renderMatrix(team,enemy){let h=`<table class="matrix"><thead><tr><th>내 선출</th>${enemy.map(e=>`<th>${e.name}</th>`).join("")}</tr></thead><tbody>`;team.forEach(p=>{h+=`<tr><th>${p.name}</th>`;enemy.forEach(e=>{const m=matchup(p,e),[txt,cls]=label(m.score);h+=`<td class="${cls}"><b>${txt}</b><span class="cell-sub">${m.best.move?.name??"공격기 없음"} · ${approxDamageTier(p,e)}</span><span class="cell-sub">${m.speed?"선공 예상":"후공 예상"}</span></td>`});h+="</tr>"});h+="</tbody></table>";$("#matrix").innerHTML=h}
+function renderSwitches(team){const out=[];team.forEach(p=>{Object.keys(TYPE_KO).filter(t=>eff(t,p.types)>=2).slice(0,3).forEach(t=>{const cand=team.filter(x=>x.id!==p.id).map(x=>({p:x,m:eff(t,x.types)})).sort((a,b)=>a.m-b.m)[0];if(cand)out.push(`${p.name}이 ${TYPE_KO[t]} 공격을 받는 상황 → ${cand.p.name} 교체 (${cand.m}배)`)})});$("#switches").innerHTML=(out.length?out:["추천 조합에 뚜렷한 약점 교체 경로가 없습니다."]).slice(0,8).map((x,i)=>`<div class="row-card"><div class="rank">${i+1}</div><div>${x}</div></div>`).join("")}
+function renderRanking(rs){$("#ranking").innerHTML=rs.slice(0,5).map((r,i)=>`<div class="row-card"><div class="rank">${i+1}</div><div><b>${r.team.map(p=>p.name).join(" · ")}</b><small>평균 ${r.avg.toFixed(1)} · 최악 ${r.worst.toFixed(1)} · ${r.megaId?`${r.team.find(p=>p.id===r.megaId)?.name} 메가`:"메가 보류"}</small></div><div class="row-score">${r.final.toFixed(1)}점</div></div>`).join("")}
+
+/* ===== 저장·공유 ===== */
+function serialize(kind){
+ return $$(`.pkm[data-kind="${kind}"]`).map(s=>{
+   const slot=s.closest(".slot");
+   if(kind==="enemy")return{id:s.value};
+   return{
+     id:s.value,
+     ability:slot.querySelector(".ability")?.value,
+     item:slot.querySelector(".item")?.value,
+     speed:slot.querySelector(".speed")?.value,
+     moves:[...slot.querySelectorAll(".move")].map(x=>x.value)
+   }
+ })
+}
+function apply(kind,data){
+ const sels=$$(`.pkm[data-kind="${kind}"]`);
+ sels.forEach((s,i)=>{
+   s.value=data[i]?.id??"";
+   const slot=s.closest(".slot");
+   if(kind==="enemy")renderEnemyPreview(slot);
+   else renderBuild(slot,data[i]);
+ })
+}
+$("#saveBtn").onclick=()=>{localStorage.setItem("mbSingleMyTeam",JSON.stringify(serialize("my")));alert("내 파티를 브라우저에 저장했습니다.")};
+$("#loadBtn").onclick=()=>{const x=localStorage.getItem("mbSingleMyTeam");if(!x)return alert("저장된 파티가 없습니다.");apply("my",JSON.parse(x))};
+$("#shareBtn").onclick=async()=>{const payload=btoa(unescape(encodeURIComponent(JSON.stringify({my:serialize("my"),enemy:serialize("enemy")}))));const code=location.href.split("#")[0]+"#team="+payload;try{await navigator.clipboard.writeText(code);alert("공유 링크를 복사했습니다.")}catch{prompt("아래 링크를 복사하세요.",code)}};
+$("#resetBtn").onclick=()=>{if(confirm("입력 내용을 초기화할까요?"))location.hash="",location.reload()};
+$("#sampleBtn").onclick=()=>{apply("my",["metagross","rotomWash","garchomp","volcarona","amoonguss","sylveon"].map((id,i)=>({id,item:i===0?"metagrossite":["leftovers","focusSash","heavyDutyBoots","sitrusBerry","choiceSpecs"][i-1]??"none"})));apply("enemy",["charizard","tyranitar","greninja","corviknight","gardevoir","swampert"].map((id,i)=>({id,item:i===0?"charizarditeY":i===5?"swampertite":"none"})))};
+$("#analyzeBtn").onclick=analyze;
+$("#refreshMovesBtn").onclick=()=>{
+ localStorage.removeItem("포켓몬챔피언스_전체기술목록_한국어");
+ localStorage.removeItem("포켓몬챔피언스_전체기술목록_날짜");
+ localStorage.removeItem("포켓몬챔피언스_전체기술목록_한국어_2");
+ localStorage.removeItem("포켓몬챔피언스_전체기술목록_날짜_2");
+ fetchChampionsMoves();
+};
+
+function init(){for(let i=0;i<6;i++){$("#myTeam").append(createSlot("my",i));$("#enemyTeam").append(createSlot("enemy",i))}if(location.hash.startsWith("#team=")){try{const d=JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(6)))));apply("my",d.my);apply("enemy",d.enemy)}catch{}}}
+try{
+ init();
+ fetchChampionsMoves();
+}catch(초기화오류){
+ console.error("초기화 오류",초기화오류);
+ const 오류영역=document.getElementById("error");
+ if(오류영역){
+   오류영역.textContent="입력 화면을 불러오는 중 오류가 발생했습니다: "+초기화오류.message;
+   오류영역.classList.add("show");
+ }
+}
+</script>
+</body>
+</html>
